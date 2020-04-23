@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Trinbago_MVC5.Models.SelectListForm>
+
+<div class="container mt-2 mb-4">
+    @using (Html.BeginForm("SearchBar", "ClassifiedAd", routeValues: new { Area = "ClassifiedAd", @modelBodyType = ViewBag.Filter_modelBodyType }, method: FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="input-group col-12 col-sm-12 col-md-12">
+            @Html.TextBox("searchBoxString", ((string)ViewBag.SearchItem), new { @class = "jumbo-form-control no-border-radius col-12 col-sm-5", @placeholder = "Search an item e.g. BMW, sofa, #123", @type = "search" })
+            <div class="no-gutters p-0 row col-12 col-sm-7">
+                <div class="no-gutters row col-12 col-sm-6 col-md-6">
+                    @Html.DropDownList("CountryId", Model.SingleOrDefault(x => x.Name.Equals("CountryList")).List, htmlAttributes: new
+                    {
+                        @class = "btn locSearchBar no-border-radius col-6 col-sm-6 col-md-6"
+                    })
+                    @Html.DropDownList("RegionId", Model.SingleOrDefault(x => x.Name.Equals("RegionList")).List, htmlAttributes: new
+                    {
+                        @class = "btn locSearchBar no-border-radius col-6 col-sm-6 col-md-6"
+                    })
+                </div>
+                @Html.DropDownList("searchBarId", Model.SingleOrDefault(x => x.Name.Equals("SearchBarCategories")).List, htmlAttributes: new
+                {
+                    @class = "btn no-border-radius col-12 col-sm-4 col-md-4"
+                })
+                <button id="SearchButton" class="btn btn-primary no-border-radius col-12 col-sm-2 col-md-2" type="submit" value="Submit"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    }
+</div>

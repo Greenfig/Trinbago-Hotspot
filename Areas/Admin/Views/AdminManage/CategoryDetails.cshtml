@@ -1,0 +1,74 @@
+﻿@model Trinbago_MVC5.Models.CategoryList
+@using Trinbago_MVC5.IdentityExtensions
+@{
+    ViewBag.Title = "CategoryDetails";
+}
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <div class="col-md-9">
+            <div class="card" style="min-width: 320px;">
+                <div class="card-header"><h1>Subcategory List&nbsp;<small>(@User.Identity.GetPosterName())</small></h1></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table edit-listings table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Subcategory Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => modelItem.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => modelItem.SubCategories.Count)
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>
+                                @Html.ActionLink("Add New SubCategory", "SubCategoryAdd", new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-primary btn-sm" })
+                                @Html.ActionLink("Back to List", "CategoryList")
+                            </p>
+                            <table class="table edit-listings table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Subcategories</th>
+                                        <th>Options</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.SubCategories != null)
+                                    {
+                                        if (Model.SubCategories.Count > 0 && Model.SubCategories.First() != null)
+                                        {
+                                            foreach (var item in Model.SubCategories)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Name)
+                                                    </td>
+                                                    <td>
+                                                        @Html.ActionLink("Edit", "SubCategoryEdit", new { id = item.StringId, catid = Model.Id })
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <br>
+</div>
+

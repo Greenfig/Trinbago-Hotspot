@@ -1,0 +1,14 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.AdlistPage
+@{
+    <!--Search-->
+    Html.RenderPartial("_SearchBarPartial", Model.SelectLists);
+
+    <div id="listings-page" class="container">
+        <!--Adlist layout-->
+        @{Html.RenderPartial("_AdListLayoutPartial", Model);}
+    </div>
+}
+<!--/Theme list-->
+@section scripts{
+    <script>adListPage(@(Model.FeaturedAds != null ? Model.FeaturedAds.Count() > 0 ? true.ToString().ToLower() : false.ToString().ToLower() : false.ToString().ToLower()));</script>
+}

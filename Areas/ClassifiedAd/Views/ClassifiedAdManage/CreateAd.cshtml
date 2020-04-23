@@ -1,0 +1,524 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdAddForm
+@{ViewBag.Title = "Create Ad";}
+@{
+    var TypeList = Model.SelectListForm.FirstOrDefault(x => x.Name.Equals("TypeList")).List.AsEnumerable();
+    var CountryList = Model.SelectListForm.FirstOrDefault(x => x.Name.Equals("CountryList")).List.AsEnumerable();
+    var RegionList = Model.SelectListForm.FirstOrDefault(x => x.Name.Equals("RegionList")).List.AsEnumerable();
+    var PriceInfoList = Model.SelectListForm.FirstOrDefault(x => x.Name.Equals("PriceInfoList")).List.AsEnumerable();
+}
+<!--Create Ad-->
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <div class="col-12 col-sm-12 col-md-9">
+            @using (Html.BeginForm("CreateAd", "ClassifiedAdManage", new { Area = "ClassifiedAd" }, FormMethod.Post, new { enctype = "multipart/form-data", id = "create-ad-form" }))
+            {
+                if (!Model.CategoryName.Equals("Jobs"))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(s => s.SubCategoryId)
+                    @Html.HiddenFor(s => s.SubCategoryName)
+                    <input data-val="true" data-val-required="The StringId field is required." id="StringId" name="StringId" type="hidden" value="@Model.StringId">
+                    <div class="card mb-2">
+                        <div class="card-header">Category</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div style="font-weight:900;">
+                                            @Html.DisplayFor(model => model.CategoryName) > @Html.DisplayFor(model => model.SubCategoryName) : @Html.ActionLink("Change Category", "CategorySelectCreateAd", new { Area = "ClassifiedAd" }, new { @class = "btn btn-sm btn-primary" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Ad Details-->
+                    <div class="card mb-2">
+                        <div class="card-header">Ad Details <span class="pull-right" style="color:red">* Required fields.</span></div>
+                        <div class="card-body">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            @Html.LabelFor(model => model.AdType, htmlAttributes: new { @class = "input-group-text", @for = "AdType" })
+                                        </div>
+                                        @Html.DropDownListFor(model => model.AdType, new SelectList(TypeList, "Text", "Value"), htmlAttributes: new { @id = "adTypeId", @class = "custom-select" })
+                                    </div>
+                                </div>  
+                                @{                              
+                                    <!--Title Ad Info-->
+                                    Html.RenderPartial("_CreateAdInfoTitlePartial", Model);
+
+                                    <!--Ad Info-->
+                                    Html.RenderPartial("_CreateAdInfoPartial", Model);
+                                }
+                                <!--Description-->
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "col-form-label" })
+                                    <div class="col-12 p-0">
+                                        @Html.TextAreaFor(model => model.Description, 12, 55, htmlAttributes: new { id = "tinyMceDefault", @class = "form-control", style = "resize:none" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Location-->
+                    <div class="card mb-2">
+                        <div class="card-header">Location <span class="pull-right" style="color:red">* Required fields.</span></div>
+                        <div class="card-body">
+                            <div class="form-horizontal">
+                            <div class="row">
+                                <div class="form-group col-12 col-sm-6">
+                                    <label class="col-form-label">@Html.DisplayNameFor(model => model.CountryId)<span style="color:red;"> *</span></label>
+                                    <div class="col-12 p-0">
+                                        @Html.DropDownListFor(model => model.CountryId, CountryList, "-Please select-", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.CountryId, null, htmlAttributes: new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-12 col-sm-6">
+                                    <label class="col-form-label">@Html.DisplayNameFor(model => model.RegionId)<span style="color:red;"> *</span></label>
+                                    <div class="col-12 p-0">
+                                        @Html.DropDownListFor(model => model.RegionId, RegionList, "-Please select-", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.RegionId, null, htmlAttributes: new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                @if (Model.AdInfo != null && Model.AdInfo.Any(x => x.Name.Equals("Coordinates")))
+                                {
+                                    <div class="form-group col-12">
+                                        <label class="col-form-label">Google Map Location</label>
+                                        <div class="col-md-10"><div id="google_map" style="width:100%;height:600px;"></div></div>
+                                        <script defer src="https://maps.googleapis.com/maps/api/js?v=3.31&key=AIzaSyBqDqfXXFwChQvgEIrWcGtChwXGbTfuOXM&callback=initMap"></script>
+                                    </div>
+                                    <div style="text-align:center;">
+                                        <div id="resetmap" class="btn btn-primary" style="margin:25px;">Reset Google Location</div>
+                                    </div>
+                                }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Ad Photo-->
+                    Html.RenderPartial("_CreateAdUploadPhoto", Model.Photos.Length);
+                    <!--Price-->
+                    if (!Model.SubCategoryName.Equals("Lost Pet") && !Model.SubCategoryName.Equals("Pet Adoption"))
+                    {
+                        <div class="card mb-2">
+                            <div class="card-header">Your price<span class="pull-right" style="color:red;">* Required fields.</span></div>
+                            <div class="card-body">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">Price Option</div>
+                                            </div>
+                                            @Html.DropDownListFor(model => model.PriceInfo, PriceInfoList, null, new { @id = "priceOptionId", @class = "custom-select" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-form-label">Price<span style="color:red;"> *</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend"><span class="input-group-text">TTD</span></div>
+                                            @Html.TextBoxFor(model => model.Price, htmlAttributes: new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Price)
+                                        <div class="mt-2">
+                                            <p>You can adjust your price anytime you like, even after your listing is published.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @:<input id="PriceInfo" name="Price" type="hidden" value="Please Contact">
+                        @:<input id="PriceInfo" name="PriceInfo" type="hidden" value="Please Contact">
+                    }
+
+                }
+                else
+                {
+
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(s => s.SubCategoryId)
+                    @Html.HiddenFor(s => s.SubCategoryName)
+                    <input data-val="true" data-val-required="The StringId field is required." id="StringId" name="StringId" type="hidden" value="@Model.StringId">
+
+                    <div class="card mb-2">
+                        <div class="card-header">Category</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12 ">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <p style="font-weight:900;">
+                                                    @Html.DisplayFor(model => model.CategoryName) > @Html.DisplayFor(model => model.SubCategoryName) : @Html.ActionLink("Change Category", "CategorySelectCreateAd", new { Area = "ClassifiedAd" }, new { @class = "btn btn-primary changecategorybutton" })
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-2">
+                        <div class="card-header">Job details <span class="pull-right" style="color:red">* Required fields.</span></div>
+                        <div class="card-body">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            @Html.LabelFor(model => model.AdType, htmlAttributes: new { @class = "input-group-text", @for = "AdType" })
+                                        </div>
+                                        @Html.DropDownListFor(model => model.AdType, new SelectList(TypeList, "Text", "Value"), htmlAttributes: new { @id = "adTypeId", @class = "custom-select" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label">Job Title<span style="color:red;"> *</span></label>
+
+                                    @Html.TextBoxFor(model => model.Title, htmlAttributes: new
+                                    {
+                                        @class = "form-control",
+                                        @data_val_required = "Job Title is required"
+                                    })
+                                    @Html.ValidationMessageFor(model => model.Title, null, htmlAttributes: new { @class = "text-danger" })
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label">Job Type<span style="color:red;"> *</span></label>
+
+                                    @{int jt = Model.AdInfo.ToList().FindIndex(x => x.Name.Equals("Job Type"));}
+                                    @Html.Hidden("AdInfo[" + jt + "].Name", Model.AdInfo.ToArray()[jt].Name)
+                                    @Html.DropDownList("AdInfo[" + jt + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name.Equals("JobTypeList")).List, "-Please select-", new
+                                    {
+                                        @class = "form-control",
+                                        required = "required",
+                                        @data_val = "true",
+                                        @data_val_required = "Job Type is required"
+                                    })
+                                    @Html.ValidationMessage("AdInfo[" + jt + "].Description", new { @class = "text-danger" })
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label">Company Name<span style="color:red;"> *</span></label>
+
+                                    @{int cn = Model.AdInfo.ToList().FindIndex(x => x.Name.Equals("Company Name"));}
+                                    @Html.Hidden("AdInfo[" + cn + "].Name", Model.AdInfo.ToArray()[cn].Name)
+                                    @Html.TextBox("AdInfo[" + cn + "].Description", null, htmlAttributes: new
+                                    {
+                                        @class = "form-control",
+                                        required = "required",
+                                        @data_val = "true",
+                                        @data_val_required = "Company Name is required"
+                                    })
+                                    @Html.ValidationMessage("AdInfo[" + cn + "].Description", new { @class = "text-danger" })
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label">@Html.LabelFor(model => model.Description)</label>
+                                    <div class="col-12 p-0">
+                                        @Html.TextAreaFor(model => model.Description, 12, 55, htmlAttributes: new { id = "tinyMceDefault", @class = "form-control", style = "resize:none" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Location-->
+                    <div class="card mb-2">
+                        <div class="card-header">Location <span class="pull-right" style="color:red">* Required fields.</span></div>
+                        <div class="card-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="form-group col-12 col-sm-6 row">
+                                        <label class="col-form-label col-12">@Html.LabelFor(model => model.CountryId)<span style="color:red;"> *</span></label>
+                                        <div class="col-12">
+                                            @Html.DropDownListFor(model => model.CountryId, CountryList, "-Please select-", new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.CountryId, null, htmlAttributes: new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-12 col-sm-6 row">
+                                        <label class="col-form-label col-12">@Html.LabelFor(model => model.RegionId)<span style="color:red;"> *</span></label>
+                                        <div class="col-12">
+                                            @Html.DropDownListFor(model => model.RegionId, RegionList, "-Please select-", new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.RegionId, null, htmlAttributes: new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Ad Photo-->
+                    Html.RenderPartial("_CreateAdUploadPhoto", Model.Photos.Length);
+                    <!--Salary-->
+                    <div class="card mb-2">
+                        <div class="card-header">Salary Info<span class="pull-right" style="color:red;">* Required fields.</span></div>
+                        <div class="card-body">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">Price Option</div>
+                                        </div>
+                                        @Html.DropDownListFor(model => model.PriceInfo, PriceInfoList, null, new { @id = "priceOptionId", @class = "custom-select" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label">Salary<span style="color:red;"> *</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">TTD</div>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.Price, htmlAttributes: new { @class = "form-control" })
+                                    </div>
+                                    <p>You can adjust your price anytime you like, even after your listing is published.</p>
+                                    @Html.ValidationMessageFor(model => model.Price)
+                                </div>
+
+                                @{int st = Model.AdInfo.ToList().FindIndex(x => x.Name.Equals("Salary Type"));}
+                                @Html.Hidden("AdInfo[" + st + "].Name", Model.AdInfo.ToArray()[st].Name)
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">Salary Type</div>
+                                        </div>
+                                        @Html.DropDownList("AdInfo[" + st + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name.Equals("SalaryInfoList")).List, "-Type-", htmlAttributes: new
+                                        {
+                                            @class = "custom-select"
+                                        })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!--Contact Info-->
+                <div class="card mb-2">
+                    <div class="card-header">Complete ad <span class="pull-right" style="color:red">* Required fields.</span></div>
+                    <div class="card-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-form-label">@Html.DisplayNameFor(model => model.AdContactEmail)<span style="color:red;"> *</span></label>
+                                <div class="col-12 p-0">
+                                    @Html.TextBoxFor(model => model.AdContactEmail, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.AdContactEmail)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">@Html.DisplayNameFor(model => model.AdContactName)<span style="color:red;"> *</span></label>
+                                <div class="col-12 p-0">
+                                    @Html.TextBoxFor(model => model.AdContactName, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.AdContactName, null, htmlAttributes: new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">@Html.DisplayNameFor(model => model.AdContactPhone)<span style="color:red;"> *</span></label>
+                                <div class="col-12 p-0">
+                                    @Html.TextBoxFor(model => model.AdContactPhone, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.AdContactPhone, null, htmlAttributes: new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">@Html.DisplayNameFor(model => model.AdContactPhone2)</label>
+                                <div class="col-12 p-0">
+                                    @Html.TextBoxFor(model => model.AdContactPhone2, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.AdContactPhone2, null, htmlAttributes: new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">@Html.DisplayNameFor(model => model.AdContactPhone3)</label>
+                                <div class="col-12 p-0">
+                                    @Html.TextBoxFor(model => model.AdContactPhone3, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.AdContactPhone3, null, htmlAttributes: new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(model => model.ContactPrivacy) Make private messaging available <b>ONLY</b> to registered users.
+                                </label>
+                            </div>
+                            <div class="checkbox mt-2">
+                                <label>
+                                    By posting this ad you are agreeing to the following <a href="@Url.Action("Terms", "Home", new { Area = ""})" style="color:blue;" target="_blank">Terms and Conditions.</a>
+                                </label>
+                            </div>
+                        </div>
+                        <br>
+                        @Html.ActionLink("Cancel", "Index", "Home", null, htmlAttributes: new { @class = "btn btn-secondary" })
+                        <input type="submit" id="pubad" value="Publish Ad" class="btn btn-primary pull-right" />
+                        <br>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.PhotoUploadMessage != null)
+{
+    <!--Modal Message-->
+    <div class="modal fade" id="myModalPhotoUploadMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Photo Upload Error <span class="text-danger">(Format: jpg/png/gif/bmp, Max Size: 6MB)</span></h4>
+                </div>
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @ViewBag.PhotoUploadMessage
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/Modal Message-->
+}
+@section bottom{
+    @Scripts.Render("~/bundles/tinymce")
+    @Scripts.Render("~/bundles/photoupldr")
+    <script>
+        $(function () {
+            PhotoUploader.init(@Model.Photos.Length);
+            tinymce.baseURL = '/Scripts/tinymce/';
+            tinymce.init({
+                selector: '#tinyMceDefault',
+                paste_as_text: true,
+                menubar: false,
+                plugins: 'lists, paste',
+                mobile: {
+                    theme: 'mobile',
+                    toolbar: ['undo', 'bold', 'italic', 'bullist', 'numlist' ]
+                },
+                toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist | outdent indent'
+            });
+        });
+    </script>
+}
+<!--/Create Ad-->
+@section scripts{
+    <script>FetchRegionForms();</script>
+    <script>
+        $(document).ready(function () {            
+            @if (ViewBag.PhotoUploadMessage != null)
+            {
+                @:$("#myModalPhotoUploadMessage").modal('show');
+            }
+            @if (!Model.SubCategoryName.Equals("Lost Pet"))
+            {
+                @:var pi = $("#priceOptionId").val();
+                @:if (pi == "Please Contact") {
+                    @:var price = document.getElementById('Price');
+                    @:price.value = "Please Contact";
+                    @:price.readOnly = true;
+                    @:AdTypePriceInfo();
+                @:}
+            }
+        });
+        // series always first
+        $("#cartruckSeries").one("change", function () {
+            var title = $("#Title").val();
+            title = (this.value.toUpperCase() + " " + title).trim().replace(/\s{2,}/g, ' ');
+            $("#Title").val(title);
+        });
+        // make always second
+        $(".selectpicker").one("change", function () {
+            var title = $("#Title").val();
+            // get value of series and insert at the end
+            var ser = $("#cartruckSeries").val().length;
+            title = (title.substr(0, ser) + " " + this.value + " " + title.substr(ser)).trim().replace(/\s{2,}/g,' ');
+            $("#Title").val(title);            
+        });
+        // model always third
+        $("#Model").one("change", function () {
+            var title = $("#Title").val();
+            var ser = $("#cartruckSeries").val().length;
+            var mk = $(".selectpicker").val().length;
+            if (ser == 0) {
+                title = (title.substr(ser, mk) + " " + this.value + " " + title.substr(mk + 1)).trim().replace(/\s{2,}/g, ' ');
+            }
+            else if (mk == 0) {
+                title = (title.substr(0, ser) + " " + this.value + " " + title.substr(ser + 1)).trim().replace(/\s{2,}/g, ' ');
+            }
+            else {
+                title = (title.substr(0, ser) + " " + title.substr(ser + 1, mk) + " " + this.value + " " + title.substr(ser + 1 + mk + 1)).trim().replace(/\s{2,}/g, ' ');
+            }
+            $("#Title").val(title);
+        });
+    </script>
+    @if (Model.AdInfo != null && Model.AdInfo.Any(x => x.Name.Equals("Coordinates")))
+    {
+        <script>
+        var map;
+        var marker;
+        function initMap() {
+            setMap();
+                google.maps.event.addListener(marker, 'dragend', function (evt) {
+                    document.getElementById("AdInfo_@Model.AdInfo.ToList().FindIndex(x => x.Name.Equals("Coordinates")).ToString()__Description").value = evt.latLng.lat().toFixed(6) + "," + evt.latLng.lng().toFixed(6);
+            });
+
+            document.getElementById('resetmap').addEventListener('click', function () {
+
+                document.getElementById("AdInfo_@Model.AdInfo.ToList().FindIndex(x => x.Name.Equals("Coordinates")).ToString()__Description").value = null;
+
+                var coordinate = new google.maps.LatLng(10.618420, -61.006564);
+                var mapOptions = {
+                    zoom: 9,
+                    center: coordinate
+                }
+                map.setOptions(mapOptions);
+
+                // Place a draggable marker on the map
+                marker.setPosition(new google.maps.LatLng(10.456387, -61.248397));
+            });
+
+            document.getElementById('RegionId').addEventListener('change', function (evt) {
+                if (!$(this).val()) {
+                    return;
+                }
+                $.getJSON("/ClassifiedAd/FetchRegionLocaton", { ID: $(this).val() }, function (t) {
+                    var coordinate = new google.maps.LatLng(t.Lat, t.Lng);
+                    var mapOptions = {
+                        zoom: t.Zoom,
+                        center: coordinate
+                    }
+                    map.setOptions(mapOptions);
+                    marker.setPosition(coordinate);
+                });
+            });
+        }
+
+        function setMap() {
+        var coordinate = new google.maps.LatLng(10.618420, -61.006564);
+        var mapOptions = {
+            zoom: 9,
+            center: coordinate
+        }
+        map = new google.maps.Map(document.getElementById('google_map'), mapOptions);
+
+        // Place a draggable marker on the map
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(10.456387, -61.248397),
+            map: map,
+            draggable: true,
+            title: "Drag me!"
+        });
+        }
+        </script>
+    }
+}

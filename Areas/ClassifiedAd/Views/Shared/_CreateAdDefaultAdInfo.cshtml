@@ -1,0 +1,67 @@
+﻿@model Trinbago_MVC5.Models.AdInfoPartial
+
+@if (Model.AdInfo.Count == 1 && Model.AdInfo.First().Name == "Coordinates")
+{
+    int cal = 0;
+    foreach (var item in Model.AdInfo)
+    {
+        @Html.Hidden("AdInfo[" + cal + "].Name", item.Name)
+        if (item.Name.Equals("Coordinates"))
+        {
+            @Html.Hidden("AdInfo[" + cal + "].Description", item.Description)
+        }
+
+        else
+        {
+            <div class="form-group">
+                @Html.Label(item.Name, htmlAttributes: new { @class = "col-form-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.TextBox("AdInfo[" + cal + "].Description", item.Description, new { id = item.Name, @class = "form-control" })
+                    @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        cal++;
+    }
+}
+else
+{
+    if (Model.AdInfo != null && Model.AdInfo.Count > 0)
+    {
+        <div id="accordianAI" class="card mb-2">
+            <button type="button" class="btn btn-link card-header" data-toggle="collapse" data-target="#collapseAdInfo" aria-expanded="false" aria-controls="collapseAdInfo" style="text-decoration:none;">Click For More Ad Info <span class="fa fa-plus"></span></button>
+            <div id="collapseAdInfo" class="collapse" data-parent="#accordianAI">
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            @{
+                                int cal = 0;
+                                foreach (var item in Model.AdInfo)
+                                {
+                                    @Html.Hidden("AdInfo[" + cal + "].Name", item.Name)
+                                    if (item.Name.Equals("Coordinates"))
+                                    {
+                                        @Html.Hidden("AdInfo[" + cal + "].Description", item.Description)
+                                    }
+
+                                    else
+                                    {
+                                        <div class="form-group col-12 col-sm-6">
+                                            @Html.Label(item.Name, htmlAttributes: new { @class = "col-form-label" })
+                                            <div class="col-12 col-sm-12 col-md-12 col-lg-8 p-0">
+                                                @Html.TextBox("AdInfo[" + cal + "].Description", item.Description, new { id = item.Name, @class = "form-control" })
+                                                @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    }
+                                    cal++;
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+

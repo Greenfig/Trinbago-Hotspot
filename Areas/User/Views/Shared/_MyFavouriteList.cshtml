@@ -1,0 +1,110 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<Trinbago_MVC5.Areas.User.Models.ClassifiedAdFavouriteList>
+<table class="table edit-listings table-striped">
+    <thead>
+        <tr>
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @if (Model.PageCount > 1)
+            {
+                @Html.PagedListPager(Model, pageNumber => Url.Action("MyFavouritesListPagination", "User",
+                 new
+                 {
+                     Area = "User",
+                     pageNumber
+                 }),
+                     PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                     new PagedListRenderOptions()
+                     {
+                         LinkToFirstPageFormat = string.Format("First"),
+                         LinkToPreviousPageFormat = string.Format("<"),
+                         LinkToNextPageFormat = string.Format(">"),
+                         LinkToLastPageFormat = string.Format("Last"),
+                         MaximumPageNumbersToDisplay = 3
+                     },
+                         new AjaxOptions()
+                         {
+                             HttpMethod = "GET",
+                             UpdateTargetId = "ajaxAdList"
+                         }
+                     ))
+            }
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var ad in Model)
+        {
+            <tr>
+                <td>
+                    <div class="row">
+                        <a id="viewalllink" class="row hover col-sm-12 col-md-7 col-lg-8" href="@Url.Action("ShortAdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", adId = @ad.Id })">
+                            <div class="col-12 col-sm-12 col-md-7 col-lg-4" style="margin-bottom:5px;">
+                                @if (!string.IsNullOrEmpty(ad.AdPhoto))
+                                {
+                                    <div class="thumbnail mylist"><img alt="Favourited Ad Image" src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = ad.Id, @FileName = ad.AdPhoto })" /></div>
+                                }
+                                else
+                                {
+                                    <div class="thumbnail mylist"><img alt="Favourited Ad No Image" src="/images/TH/noimage.png"></div>
+                                }
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-8 col-lg-8" style="text-align:center;">
+                                <span>@ad.Title.ToUpper()</span><span style="text-align:right;">@ad.Price</span><br /><br />
+
+                                @if (ad.Status == 1)
+                                {
+                                    <span>
+                                        <b>Status : </b>Sold
+                                    </span>
+                                }
+                                else if (ad.Status == 2)
+                                {
+                                    <span>
+                                        <b>Status : </b>Rented
+                                    </span>
+                                }
+                                @if (ad.EditTimeStamp != null && ad.EditTimeStamp != new DateTime())
+                                {
+                                    <span class="extend-ad">last edited(@ad.EditTimeStamp.ToString("dd/MMMM/yyyy"))</span>
+                                }
+                            </div>
+                        </a>
+                        <div class="col-12 col-sm-12 col-md-5 col-lg-4" style="text-align:center;">
+                            <div id="removefavourite" class="btn btn-warning btn-sm" style="margin-top:5px;margin-bottom:5px;margin-right:5px;" data-fav-id="@ad.Id" data-pagenumber="@Model.PageNumber">Remove From Favourite</div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<tfoot>
+    <tr>
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        @if (Model.PageCount > 1)
+        {
+            @Html.PagedListPager(Model, pageNumber => Url.Action("MyFavouritesListPagination", "User",
+                 new
+                 {
+                     Area = "User",
+                     pageNumber
+                 }),
+                     PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                     new PagedListRenderOptions()
+                     {
+                         LinkToFirstPageFormat = string.Format("First"),
+                         LinkToPreviousPageFormat = string.Format("<"),
+                         LinkToNextPageFormat = string.Format(">"),
+                         LinkToLastPageFormat = string.Format("Last"),
+                         MaximumPageNumbersToDisplay = 3
+                     },
+                         new AjaxOptions()
+                         {
+                             HttpMethod = "GET",
+                             UpdateTargetId = "ajaxAdList"
+                         }
+                     ))
+        }
+    </tr>
+</tfoot>

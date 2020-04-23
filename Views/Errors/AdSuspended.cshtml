@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Ad Suspended";
+}
+<hr class="topbar" />
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <hgroup class="title container">
+                <h1 class="error">Ad Temporarily Suspended</h1>
+            </hgroup>
+        </div>
+        <div class="card-body">
+            <h2 class="error">The Ad you are looking for has been temporarily suspended.</h2>
+            <div class="col-md-12" style="text-align:center;">
+                @Html.ActionLink("Home Page", "Index", "Home", null, new { @class = "btn btn-primary" })
+            </div>
+            <br />
+            <br />
+        </div>
+    </div>
+</div>

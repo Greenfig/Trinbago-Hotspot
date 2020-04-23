@@ -1,0 +1,52 @@
+﻿@model Trinbago_MVC5.Areas.Admin.Models.CountryAddForm
+
+@{ ViewBag.Title = "Add Country";}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Ad List-->
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header"><h1>Create new country&nbsp;<small>(@User.Identity.Name)</small></h1></div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+
+                            <div class="row">
+                                <div class="col-sm-7">
+                                    @using (Html.BeginForm())
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.ValidationSummary(true)
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        @Html.LabelFor(m => m.Name)
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        @Html.TextBoxFor(m => m.Name, htmlAttributes: new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(m => m.Name)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p>                                                
+                                                <input type="submit" class="btn btn-primary btn-sm pull-right" style="margin-left:5px;" value="Create" />
+                                                @Html.ActionLink("Back to List", "Country", null, htmlAttributes: new { @class = "btn btn-secondary btn-sm pull-right", style = "margin-right:5px;" })
+                                            </p>
+                                        </fieldset>
+                                    }
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/Ad List-->
+    </div>
+    <br>
+</div>

@@ -1,0 +1,39 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdAddForm
+@if (Model.AdInfo != null)
+{
+    var NewModel = new Trinbago_MVC5.Models.AdInfoPartial() { AdInfo = Model.AdInfo, SelectListForm = Model.SelectListForm };
+    if (Model.SubCategoryName.Equals("Automotive Parts"))
+    {
+        Html.RenderPartial("_CreateAdAutomotivePartsAdInfo", NewModel);
+    }
+    else if (Model.SubCategoryName.Equals("Cars/Trucks"))
+    {
+        Html.RenderPartial("_CreateAdCarTruckAdInfo", NewModel);
+    }
+    else if (Model.SubCategoryName.Equals("Motorcycles/ATVs"))
+    {
+        Html.RenderPartial("_CreateAdMotorcycleATVAdInfo", NewModel);
+    }
+    else if (Model.SubCategoryName.Equals("Apartments/Condos For Sale") ||
+    Model.SubCategoryName.Equals("Apartments/Condos Rental") ||
+    Model.SubCategoryName.Equals("House For Sale") ||
+    Model.SubCategoryName.Equals("House Rental") ||
+    Model.SubCategoryName.Equals("Commercial Office Space") ||
+    Model.SubCategoryName.Equals("Land For Sale") ||
+    Model.SubCategoryName.Equals("Land Rental/Leasing"))
+    {
+        Html.RenderPartial("_CreateAdRealEstateAdInfo", NewModel);
+    }
+    else if (Model.CategoryName.Equals("Pets"))
+    {
+        Html.RenderPartial("_CreateAdPetAdInfo", NewModel);
+    }
+    else if (Model.CategoryName.Equals("Business Services"))
+    {
+        Html.RenderPartial("_CreateAdBusinessServicesAdInfo", NewModel);
+    }
+    else
+    {
+        Html.RenderPartial("_CreateAdDefaultAdInfo", NewModel);
+    }
+}

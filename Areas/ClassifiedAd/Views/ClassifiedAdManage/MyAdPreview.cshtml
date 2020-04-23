@@ -1,0 +1,269 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdWithDetail
+@{
+    ViewBag.Title = "Ad Preview";
+    var pho = Model.Photos;
+    var max = pho.Count();
+}
+<!--Heading-->
+<div style="text-align:center;background-color:gainsboro;font-size:large;">
+    <div class="container">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12" style="margin-top:20px;margin-bottom:10px;line-height:30px;">Below is a preview of your Ad. Please allow 24 hours for changes to be applied. Thank You!</div>
+                <div class="col-12 col-sm-4" style="margin-top:5px;margin-bottom:10px;">@Html.ActionLink("Home Page", "Index", "Home", new { Area = "" }, new { @class = "btn btn-primary btn-sm", @style = "margin-bottom:20px;" })</div>
+                <div class="col-12 col-sm-4" style="margin-top:5px;margin-bottom:10px;">@Html.ActionLink("Post Another Ad", "CreateAd", "ClassifiedAdManage", new { Area = "ClassifiedAd", stringId = string.Empty }, new { @class = "btn btn-warning btn-sm", @style = "margin-bottom:20px;" })</div>
+                <div class="col-12 col-sm-4" style="margin-top:5px;margin-bottom:10px;">@Html.ActionLink("View All Ads", "AdList", "ClassifiedAd", new { Area = "ClassifiedAd" }, new { @class = "btn btn-success btn-sm", @style = "margin-bottom:20px;" })</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" id="listings-page">
+    <div class="row">
+        <div class="col-sm-7">
+            <h1 style="line-height:30px;">@Model.Title</h1>
+            <p>Location: @Model.Country.Name , @Model.Region.Name</p>
+            <p>Category: @Model.Category.Name / @Model.SubCategory.Name</p>
+        </div>
+        <div class="col-sm-5">
+            <p class="price float-sm-right" style="margin-top:10px;line-height:30px;">@(Model.Price.Equals("0") && Model.PriceInfo.Equals("Please Contact") ? "Please Contact" : string.Format("{0:C0}", Model.Price.AsFloat()))</p>
+        </div>
+    </div>
+
+    <div class="col-sm-12 row no-margin p-0">
+        <!--Social Plugins-->
+        <div class="col-8 col-sm-8 col-md-8 p-0">
+            <div class="footer-social-icons">
+                <ul class="social-icons">
+                    @if (Model.IsOwner)
+                    {
+                        <li>
+                            <a class="social-icon" style="background-color:transparent; border-color:transparent; padding:0;" href="@Url.Action("MyAdEdit", "ClassifiedAdManage", new { Area = "ClassifiedAd", adId = Model.Id })">
+                                <i class="fa fa-pencil">&nbsp;Quick Edit</i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-9 listing-wrapper listings-top listings-bottom">
+            <div class="row">
+                <!--Photo-->
+                @if (Model.Photos != null && Model.Photos.Count() > 0 && !Model.Category.Name.Contains("Jobs"))
+                {
+                    <div class="col-12 center zoom-gallery" style="margin-bottom:10px;">
+                        <div class="card">
+                            <div class="card-body" id="gallery">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-9">
+                                        <div class="photo-container">
+                                            <img class="img-fluid photo-img" alt="@Model.SubCategory.Name Image" src="~/Images/@Model.StringId.Substring(2, 4)/@Model.StringId.Substring(0, 4)/@pho.ElementAt(0).AdDetails_FileName" />
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-3">
+                                        <div class="row">
+                                            @for (int i = 0; i < max; i++)
+                                            {
+                                                <div class="col-3 col-sm-2 col-md-3 col-lg-6" style="padding:5px;">
+                                                    <div class="photo-container-thumbnail">
+                                                        <img class="img-fluid photo-img-thumbnail" alt="@Model.SubCategory.Name Image" src="~/Images/@Model.StringId.Substring(2, 4)/@Model.StringId.Substring(0, 4)/@pho.ElementAt(i).AdDetails_FileName" />
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <!--Details-->
+                <div id="maindetailbody" class="col-12">
+                    <h3 class="fancy">
+                        <span id="fancy-span1">Ad details</span>&nbsp;<span id="fancy-span2" class="pull-right">Views: @Model.AdViewsCount</span>
+                    </h3>
+                    @{
+                        HtmlString GMap = null;
+                        var cord = Model.AdInfo.SingleOrDefault(x => x.Name.Equals("Coordinates"));
+                        if (cord != null && !string.IsNullOrEmpty(cord.Description))
+                        {
+                            var loc = cord.Description.Split(',');
+                            GMap = new HtmlString("<div class=\"row\">" +
+                                                                "<div class='col-6'>" +
+                                                                    "<a class='venobox btn btn-outline-dark' style='font-weight:600;height:54px;width:120px;' data-vbtype='iframe' href='https://www.google.com/maps/embed/v1/place?key=AIzaSyBqDqfXXFwChQvgEIrWcGtChwXGbTfuOXM&q=" + loc[0] + "," + loc[1] + "&zoom=16'>" +
+                                                                        "<img src =\"/Images/icons/google_maps_logo.png\" style=\"width:50px;margin-left:-10px; margin-top:-5px;margin-bottom:-5px;\" alt='google maps icon'>Google</img>" +
+                                                                    "</a>" +
+                                                                "</div>" +
+                                                                "<div class='col-6'>" +
+                                                                    "<a class='btn btn-outline-dark d-sm-none' style='font-weight:600;height:54px;width:125px;' href='waze://?ll=" + loc[0] + "," + loc[1] + "' target='_blank\'>" +
+                                                                        "<img src =\"/Images/icons/waze.png\" style=\"width:50px;margin-left:-10px; margin-top:-5px;margin-bottom:-5px;\" alt='waze icon'>Waze</img>" +
+                                                                    "</a>" +
+                                                                "</div>" +
+                                                                "</div>" +
+                                                                "<hr style='border:0px;'/>");
+                        }
+                    }
+                    @GMap
+                    <!--Ad Details-->
+                    <div class="row">
+                        @if (Model.AdInfo != null)
+                        {
+                            if (Model.AdInfo.Count > 0)
+                            {
+                                if (!Model.AdInfo.FirstOrDefault().Name.Equals("Species") && !Model.AdInfo.FirstOrDefault().Name.Equals("Coordinates"))
+                                {
+                                    <div class="col-12 col-sm-6">
+                                        <table class="table table-striped">
+                                            <tbody>
+                                                @foreach (var ai in Model.AdInfo)
+                                                {
+                                                    if (!string.IsNullOrEmpty(ai.Description))
+                                                    {
+                                                        if (ai.Name.Equals("Mileage"))
+                                                        {
+                                                            <tr>
+                                                                <th>@ai.Name</th>
+                                                                <td>@ai.Description <strong> km</strong></td>
+                                                            </tr>
+                                                        }
+                                                        else if (ai.Name.Equals("Size"))
+                                                        {
+                                                            <tr>
+                                                                <th>@ai.Name</th>
+                                                                <td>@ai.Description <strong> sq ft</strong></td>
+                                                            </tr>
+                                                        }
+                                                        else if (!ai.Name.Equals("Coordinates"))
+                                                        {
+                                                            <tr>
+                                                                <th>@ai.Name</th>
+                                                                <td>@ai.Description</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            }
+                        }
+                        <div class="col-12 col-sm-6">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Ad Type:</th>
+                                        <td>@Model.AdType</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Price:</th>
+                                        <td>
+                                            @{
+                                                if (Model.PriceInfo.Equals("Please Contact"))
+                                                {
+                                                    @Model.PriceInfo
+                                                }
+                                                else if (Model.PriceInfo.Equals("None"))
+                                                {
+                                                    @(string.Format("{0:C0}", Model.Price.ToString().AsFloat()))
+                                                }
+                                                else
+                                                {
+                                                    @(string.Format("{0:C0}", Model.Price.ToString().AsFloat()))
+                                                    @:&nbsp;<strong class="highlighted">
+                                                        @Model.PriceInfo
+                                                        @:</strong>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--More Info-->
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <h3 class="fancy">
+                            <span id="fancy-span1">More Info</span>
+                        </h3>
+                        <div class="row">
+                            <div class="col-sm-12" style="-ms-word-wrap: break-word; word-wrap: break-word;">
+                                @Html.Raw(Model.Description)
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <!--Contact-->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" style="margin-bottom:10px;">
+            <div class="row">
+                <!---->
+                <div class="col-12 mb-2">
+                    <div class="card">
+                        <div class="row" style="margin:inherit;">
+                            <div class="col-12 center zoom-gallery">
+                                <!--PUser Partial-->
+                                @if (Model.PremiumUser != null)
+                                {
+                                    Html.RenderPartial("_PUserInfo", Model.PremiumUser);
+                                }
+                            </div>
+                            <div class="card-title" style="width:100%;">
+                                <div class="card-header" style="font-weight:bold;text-align:center;">Contact Member</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="row">
+                                    @if (Model.Category.Name.Contains("Jobs") && Model.Photos != null && Model.Photos.Count() > 0)
+                                    {
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-12" style="margin-bottom:10px;">
+                                                    <div class="job-container">
+                                                        <div class="job-img-container">
+                                                            <img class="job-img" src="~/Images/@Model.StringId.Substring(2, 4)/@Model.StringId.Substring(0, 4)/@pho.ElementAt(0).AdDetails_FileName" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    <!--Phone Number and Name-->
+                                    <div class="col-12">
+                                        <p style="font-size:small;text-align:center;border-bottom:1px inset gainsboro;padding-bottom:10px;">@Model.AdContactName.ToUpper()</p>
+                                        <div class="row" style="text-align:center;">
+                                            <p class="col-12 col-sm-12 col-md-12"><strong>1-(868)-@Html.DisplayFor(model => model.AdContactPhone)</strong></p>
+                                            @if (!string.IsNullOrEmpty(Model.AdContactPhone2))
+                                            {
+                                                <p class="col-12 col-sm-12 col-md-12"><strong>1-(868)-@Html.DisplayFor(model => model.AdContactPhone2)</strong></p>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.AdContactPhone3))
+                                            {
+                                                <p class="col-12 col-sm-12 col-md-12"><strong>1-(868)-@Html.DisplayFor(model => model.AdContactPhone3)</strong></p>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    @if (!Model.Category.Name.Equals("Jobs"))
+                                    {
+                                        <div class="col-12" style="text-align:center;">
+                                            <button data-toggle="modal" disabled data-target="#myModal" class="btn btn-warning btn-sm" style="margin-bottom: 10px; font-weight: bold;" type="button">Reply to ad</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-12" style="text-align:center;">
+                                            <button id="applyto" disabled class="btn btn-warning btn-sm btn-sm" style="margin-bottom: 10px; font-weight: bold;" type="button">Open<br />Application Form</button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

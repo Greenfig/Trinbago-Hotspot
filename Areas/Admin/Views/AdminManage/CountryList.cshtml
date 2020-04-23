@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Trinbago_MVC5.Models.CountryList>
+@using Trinbago_MVC5.IdentityExtensions
+@{ViewBag.Title = "Country List";}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Ad List-->
+        <div class="col-md-9">
+            <div class="card" style="min-width: 340px;">
+                <div class="card-header">Manage adverts (<b>@User.Identity.GetPosterName()'s</b> posted Ad list)</div>
+                <div class="card-body">
+                    <table class="table edit-listings table-striped">
+                        <thead>
+                            <tr>                                                
+                                <th>Country</th>
+                                <th>Regions</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="main-td">
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.RegionCount)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                                        @Html.ActionLink("Details", "CountryDetails", new { id = item.Id })
+                                    </td>                                                      
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--/Ad List-->
+    </div>
+    <br>
+</div>

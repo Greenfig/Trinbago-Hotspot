@@ -1,0 +1,101 @@
+﻿<div class="col-sm-3 d-none d-md-block">
+    <div class="sidebar-account">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">My Account</div>
+                    <div class="card-body" style="padding:5px;">
+                        <ul class="nav flex-column">
+                            @if (User.IsInRole("Premium"))
+                            {
+                                <li class="nav-item">
+                                    @Html.ActionLink("My Premium Profile", "PUserProfile", "Premium", new { Area = "PremiumUser" }, htmlAttributes: new { @class = ViewBag.Title == "PUserProfile" ? "selected nav-link": "active nav-link" })
+                                </li>
+                            }
+                            else if(User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    @Html.ActionLink("My Profile", "MyProfile", "User", new { Area = "User" }, htmlAttributes: new { @class = ViewBag.Title == "My Account" ? "selected nav-link" : "active nav-link" })
+                                    @if (ViewBag.Title == "My Account" || ViewBag.Title == "Manage Contact Info" || ViewBag.Title == "External Pass Change")
+                                    {
+                                        <ul style="list-style:none;line-height:30px;">
+                                            <li>
+                                                @Html.ActionLink("Change Password", "ChangePassword", "Account", new { Area = "Account" }, htmlAttributes: new { @class = ViewBag.Title == "External Pass Change" ? "selected nav-link" : "active nav-link" })
+                                            </li>
+                                            <li>
+                                                @Html.ActionLink("Change Contact Info", "ContactInfo", "User", new { Area = "User" }, htmlAttributes: new { @class = ViewBag.Title == "Manage Contact Info" ? "selected nav-link" : "active nav-link" })
+                                            </li>
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                            <li class="nav-item">
+                                @Html.ActionLink("My Favourites", "MyFavourites", "User", new { Area = "User" }, htmlAttributes: new { @class = ViewBag.Title == "My Favourites" ? "selected nav-link" : "active nav-link" })
+                            </li>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    @Html.ActionLink("Manage Ads", "MyAdList", "ClassifiedAdManage", new { Area = "ClassifiedAd" }, htmlAttributes: new { @class = ViewBag.Title == "Manage Ads" ? "selected nav-link" : "active nav-link" })
+                                </li>
+                                <!--
+                                <li>
+                                    @Html.ActionLink("Promote My Ads", "CurrentPromotions", "Promotion", new { Area = "Promotion" }, null)
+                                    @if (ViewBag.Title == "Current Promoted Ads" || ViewBag.Title == "Promote Ads" || ViewBag.Title == "Order History")
+                                    {
+                                        <ul style="list-style:none;line-height:30px;">
+                                            <li>
+                                               @Html.ActionLink("Current Promoted Ads", "CurrentPromotions", "Promotion", new { Area = "Promotion" }, htmlAttributes: new { @class = ViewBag.Title == "Current Promoted Ads" ? "selected nav-link" : "active nav-link" })
+                                            </li>
+                                            <li>
+                                                @Html.ActionLink("Promote Ad", "PromoteAds", "Promotion", new { Area = "Promotion" }, htmlAttributes: new { @class = ViewBag.Title == "Promote Ads" ? "selected nav-link" : "active nav-link" })
+                                            </li>
+                                            <li>
+                                                @Html.ActionLink("Order History", "OrderHistory", "Promotion", new { Area = "Promotion" }, htmlAttributes: new { @class = ViewBag.Title == "Order History" ? "selected nav-link" : "active nav-link" })
+                                            </li>
+                                        </ul>
+                                    }
+                                </li>-->
+
+                                if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                                {
+                                    <li class="nav-item">
+                                        @Html.ActionLink("Ad Queue", "AdQueue", "Admin", new { Area = "Admin" }, htmlAttributes: new { @class = ViewBag.Title == "Ad Queue" ? "selected nav-link" : "active nav-link" })
+                                    </li>
+                                    <li class="nav-item">
+                                        @Html.ActionLink("Promote Ad", "AdminPromoteUserAdPage", "Admin", new { Area = "Admin" }, htmlAttributes: new { @class = ViewBag.Title == "Promote User Ad" ? "selected nav-link" : "active nav-link" })
+                                    </li>
+                                    <li class="nav-item">
+                                        @Html.ActionLink("Ad Reports", "ReportQueue", "Admin", new { Area = "Admin" }, htmlAttributes: new { @class = ViewBag.Title == "Reports" ? "selected nav-link" : "active nav-link" })
+                                    </li>
+                                    <li class="nav-item">
+                                        @Html.ActionLink("Messages", "MessageQueue", "Admin", new { Area = "Admin" }, htmlAttributes: new { @class = ViewBag.Title == "Message Queue" ? "selected nav-link" : "active nav-link" })
+                                    </li>
+                                    <li class="nav-item">
+                                        @Html.ActionLink("Members", "MemberList", "Admin", new { Area = "Admin" }, htmlAttributes: new { @class = ViewBag.Title == "Member List" ? "selected nav-link" : "active nav-link" })
+                                    </li>
+
+                                    if (User.IsInRole("Admin"))
+                                    {
+                                        <li class="nav-item">
+                                            @Html.ActionLink("Admin Tools", "AdminTools", "AdminManage", new { Area = "Admin" }, htmlAttributes: new { @class = ViewBag.Title == "Admin Tools" ? "selected nav-link" : "active nav-link" })
+                                        </li>
+                                        <li class="nav-item">
+                                            @Html.ActionLink("Country List", "CountryList", "AdminManage", new { Area = "Admin" }, htmlAttributes: new { @class = ViewBag.Title == "Country List" ? "selected nav-link" : "active nav-link" })
+                                        </li>
+                                        <li class="nav-item">
+                                            @Html.ActionLink("Category List", "CategoryList", "AdminManage", new { Area = "Admin" }, htmlAttributes: new { @class = ViewBag.Title == "Category List" ? "selected nav-link" : "active nav-link" })
+                                        </li>
+                                    }
+                                }
+                            }
+                            <li class="nav-item">
+                                <a href="@Url.Action("CreateAd", "ClassifiedAdManage", new { Area = "ClassifiedAd", @subCatId = string.Empty })" class= "@(ViewBag.Title == "Create Ad" ? "selected" : "active") nav-link">Create new ad</a>
+                            </li>                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

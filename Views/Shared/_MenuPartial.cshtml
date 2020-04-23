@@ -1,0 +1,71 @@
+﻿@using Trinbago_MVC5.IdentityExtensions
+
+<nav class="navbar navbar-default navbar-light navbar-expand-xl container" style="margin-top:0;">
+    <a href="@Url.Action("Index","Home", new { Area = "" })" class="navbar-brand logo">
+        <div class="logo logoImage"></div>
+    </a>
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbr" style="margin-right:10px;">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="navbr" class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto" style="margin-top:0;margin-right:0;margin-left:0;">
+            @if (Request.IsAuthenticated)
+            {
+                <li class="nav-item active"><a class="nav-link disabled">@(User.IsInRole("Banned") ? "YOU ARE BANNED" : "Welcome " + @User.Identity.GetPosterName())!</a></li>
+                <li class="nav-item"><a class="nav-link" href="@Url.Action("Index","Home")">Home</a></li>
+                <li class="nav-item dropdown">@{Html.RenderPartial("_MoreInfo");}</li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">My Account<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li role="menuitem">@Html.ActionLink("My Profile", "MyProfile", "User", new { Area = "User" }, null)</li>                            
+                            <li role="menuitem">@Html.ActionLink("My Favourites", "MyFavourites", "User", new { Area = "User" }, null)</li>
+                            <li role="menuitem">@Html.ActionLink("Manage Ads", "MyAdList", "ClassifiedAdManage", new { Area = "ClassifiedAd" }, null)</li>
+                            //<li role="menuitem">@Html.ActionLink("Promote My Ads", "CurrentPromotions", "Promotion")</li>
+                            if (User.IsInRole("Moderator") || User.IsInRole("Admin"))
+                            {
+                                <li role="menuitem">@Html.ActionLink("Ad Queue", "AdQueue", "Admin", new { Area = "Admin" }, null)</li>
+                                <li role="menuitem">@Html.ActionLink("Promote Ad", "AdminPromoteUserAdPage", "Admin", new { Area = "Admin" }, null)</li>
+                                <li role="menuitem">@Html.ActionLink("Ad Reports", "ReportQueue", "Admin", new { Area = "Admin" }, null)</li>
+                                <li role="menuitem">@Html.ActionLink("Messages", "MessageQueue", "Admin", new { Area = "Admin" }, null)</li>
+                                <li role="menuitem">@Html.ActionLink("Members", "MemberList", "Admin", new { Area = "Admin" }, null)</li>
+                                if (User.IsInRole("Admin"))
+                                {
+                                    <li role="menuitem">@Html.ActionLink("Admin Tools", "AdminTools", "AdminManage", new { Area = "Admin" }, null)</li>
+                                    <li role="menuitem">@Html.ActionLink("Country List", "CountryList", "AdminManage", new { Area = "Admin" }, null)</li>
+                                    <li role="menuitem">@Html.ActionLink("Category List", "CategoryList", "AdminManage", new { Area = "Admin" }, null)</li>
+                                }
+                            }
+                            using (Html.BeginForm("logoff", "Account", new { Area = "Account" }, FormMethod.Post, new { id = "logoutForm", @role = "menuitem" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <li>
+                                    <a id="logout" href="javascript:document.getElementById('logoutForm').submit()"><div>Log off</div></a>
+                                </li>
+                            }
+                        }
+                        else
+                        {                                             
+                            <li role="menuitem">@Html.ActionLink("My Favourites", "MyFavourites", "User", new { Area = "User" }, null)</li>
+                        }
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item"><a class="nav-link" href="@Url.Action("Index","Home")">Home</a></li>
+                <li class="nav-item">@Html.ActionLink("Log in", "Login", "Account", routeValues: new { Area = "Account" }, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
+                <li class="nav-item">@Html.ActionLink("Register", "Register", "Account", routeValues: new { Area = "Account" }, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
+                <li class="nav-item dropdown">@{Html.RenderPartial("_MoreInfo");}</li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">My Account<b class="caret"></b></a>
+                    <ul class="dropdown-menu">                                           
+                        <li role="menuitem">@Html.ActionLink("My Favourites", "MyFavourites", "User", new { Area = "User" }, null)</li>                        
+                    </ul>
+                </li>
+            }
+            <li class="nav-item">@Html.ActionLink("Post an Ad", "CreateAd", "ClassifiedAdManage", new { Area = "ClassifiedAd", subCatId = string.Empty }, new { id = "postadlayout", @class = "nav-link bg-warning" })</li>
+        </ul>
+    </div>
+</nav>

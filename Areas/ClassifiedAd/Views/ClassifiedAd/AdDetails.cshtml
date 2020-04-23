@@ -1,0 +1,46 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.AdListDetailParent
+@{
+    ViewBag.Title = @ViewBag.PageTitle;
+}
+@section social{
+    @Scripts.RenderFormat(@"<script src=""{0}"" async></script>", "~/bundles/social")
+}
+<!--Search-->
+@{ Html.RenderPartial("_SearchBarPartial", Model.SelectLists); }
+
+@if (Model != null)
+{
+    <div class="container" id="listings-page">
+    @if (Model.Model1.Status == 1 || Model.Model1.Status == 2)
+    {
+        Html.RenderPartial("_AdDetailsClosedPage", Model.Model1);
+        Html.RenderPartial("_AdDetailsRelatedAdPartial", Model);
+    }
+    else
+    {
+        if (Model.Model1.Category.Name.Contains("Jobs"))
+        {
+            Html.RenderPartial("_AdDetailsJobPartial", Model);
+        }
+        else if (Model.Model1.Photos != null && Model.Model1.Photos.Count() > 0)
+        {
+            Html.RenderPartial("_AdDetailsHasPhotoPartial", Model);
+        }
+        else
+        {
+            Html.RenderPartial("_AdDetailsNoPhotoPartial", Model);
+        }
+    }
+    </div>
+}
+@section scripts{
+    <!--Load google maps api-->
+    @if (Model.Model1.Category.Name.Contains("Real Estate"))
+    {
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+    }
+    <script>
+listDetailPage(@(Model.Model1.Photos != null && Model.Model1.Photos.Count() > 0 ? true.ToString().ToLower() : false.ToString().ToLower()),
+                           @(Model.Model1.Category.Name.Contains("Jobs") ? true.ToString().ToLower() : false.ToString().ToLower()),
+                           @(ViewBag.Message != null ? true.ToString().ToLower() : false.ToString().ToLower()));</script>
+}

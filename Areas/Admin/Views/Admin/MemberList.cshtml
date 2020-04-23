@@ -1,0 +1,194 @@
+﻿@using Microsoft.AspNet.Identity.Owin;
+@model IEnumerable<Trinbago_MVC5.Areas.User.Models.UserProfileBase>
+
+@{
+    ViewBag.Title = "Member List";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Ad List-->
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header">Manage members</div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+
+                                    <table class="table-striped col-md-12">
+                                        <tr>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.PosterName)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.Email)
+                                            </th>
+                                            <th>
+                                                Current role
+                                            </th>
+                                            <th></th>
+                                        </tr>
+
+                                        @foreach (var item in Model) {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.PosterName)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Email)
+                                                </td>
+                                                <td>
+                                                    @{string rs = "";
+                                                        int count = 0;
+                                                    }
+                                                    @foreach (string ro in item.RoleNames)
+                                                    {
+                                                        if (count == 0)
+                                                        {
+                                                            rs += ro;
+                                                        }
+                                                        if (count > 0)
+                                                        {
+                                                            rs += "," + ro;
+                                                        }
+                                                        count++;
+                                                    }
+                                                    <span>@rs</span>
+                                                </td>
+
+                                                <td>                                                    
+                                                    @if (!rs.Contains("Admin"))
+                                                    { 
+                                                        @Html.ActionLink("Details", "MemberDetails", "Admin", new { Area = "Admin", id = item.Id }, null)
+                                                        
+                                                        if (User.IsInRole("Admin")) { 
+                                                            @:|
+                                                            <button type="button" data-toggle="modal" data-target="#myModalRole" data-mem-id="@item.Id" data-mem-name="@item.PosterName" data-mem-email="@item.Email" data-mem-roles="@rs" class="btn btn-primary btn-sm" style="margin-top:5px;margin-bottom:5px;">Roles</button>
+                                                        }
+                                                        else if (User.IsInRole("Moderator") && !rs.Contains("Moderator") && !rs.Contains("Admin"))
+                                                        {
+                                                            @:|
+                                                            <button type="button" data-toggle="modal" data-target="#myModalRole" data-mem-id="@item.Id" data-mem-name="@item.PosterName" data-mem-email="@item.Email" data-mem-roles="@rs" class="btn btn-primary btn-sm" style="margin-top:5px;margin-bottom:5px;">Roles</button>
+                                                        }                   
+                                                    }
+                                                    </td>
+                                            </tr>
+                                        }
+                                     </table>                              
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/Ad List-->
+    </div>
+    <br>
+</div>
+@if (Model != null)
+{
+    if (Model.Count() > 0)
+    {
+        <!--Modals Close-->
+        using (Ajax.BeginForm("AdminRoleChange", null))
+        {
+            <div class="modal fade" id="myModalRole" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:scroll !important;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">You can change a user to a desired role</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="memNamehid" name="memname" value="" />
+                            <input type="hidden" id="memOldRole" name="oldrole" value="" />
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                    </tr>
+                                    <tr>
+                                        <td id="memName"></td>
+                                        <td id="memEmail"></td>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <td>@Html.DropDownList("newrole", new SelectList(new List<string>() { "Moderator", "Premium", "User", "Banned", "Unbanned" }, ""), "-Select-", htmlAttributes: new { id = "memRoles" })</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@Html.DropDownList("newrole", new SelectList(new List<string>() { "Premium", "User", "Banned", "Unbanned" }, ""), "-Select-", htmlAttributes: new { id = "memRoles" })</td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="closeId" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <input type="submit" value="Save changes" id="myModalSubmit" class="btn btn-primary pull-right" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <!--/Modal Close-->
+        @section scripts{
+            <script>
+                //triggered when modal is about to be shown
+                $('#myModalRole').on('show.bs.modal', function (e) {
+                    //get data-id attribute of the clicked element
+                    var memId = $(e.relatedTarget).data('mem-id');
+                    var memUser = $(e.relatedTarget).data('mem-name');
+                    var memEmail = $(e.relatedTarget).data('mem-email');
+                    var memRoles = $(e.relatedTarget).data('mem-roles');
+                    //populate the textbox
+                    $(e.currentTarget).find('#memName').text(memUser);
+                    $(e.currentTarget).find('#memNamehid').val(memEmail);
+                    $(e.currentTarget).find('#memOldRole').val(memRoles);
+                    $(e.currentTarget).find('#memEmail').text(memEmail);
+                    $(e.currentTarget).find('#memRoles').val(memRoles);
+                });
+
+                $('#myModalRole').on('click', '#myModalSubmit', function () {
+                    setTimeout(function () { location.reload(true) }, 500);
+                });
+
+                $('#myModal').on('click', '#okIdButtonFailure', function () {
+                    document.getElementById('myModalClose').innerHTML = "";
+                    $('#myModalClose').append(
+                     "<div class='modal-dialog'>" +
+                        "<div class='modal-content'>" +
+                            "<div class='modal-header'>" +
+                                "<h4 class='modal-title' id='myModalLabel'>You are about to close an ad</h4>" +
+                                "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>" +                                                                
+                            "</div>" +
+                            "<div class='modal-body'>" +
+                                "<strong>Title:&nbsp;<weak id='adtitle'></weak></strong>" +
+                                "<br />" +
+                                "Closing this ad cannot be undone!" +
+                            "</div>" +
+                            "<div class='modal-footer'>" +
+                                "<button type='button' id='closeId' class='btn btn-secondary' data-dismiss='modal'>Cancel</button>" +
+                                "<input type='submit' value='Close Ad' id='myModalSubmit' class='btn btn-primary pull-right' />" +
+                            "</div>" +
+                        "</div>" +
+                    "</div>"
+                   );
+                });
+
+                $('#myModal').on('click', '#okIdButtonSucceed', function () {
+                    location.reload();
+                });
+
+            </script>
+            
+        }
+    }
+}

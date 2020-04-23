@@ -1,0 +1,123 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@using Trinbago_MVC5.Areas.Promotion.Models
+@model IPagedList<Trinbago_MVC5.Areas.Promotion.Models.ClassifiedAdPromotionList>    
+
+@if (Model != null && Model.Count() > 0)
+{
+    @:<table>
+    <thead>
+        <tr>
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @if (Model.PageCount > 1)
+            {
+                @Html.PagedListPager(Model, pageNumber => Url.Action("NonPromotedAdListPagination", "Promotion",
+            new
+            {
+                pageNumber,
+                searchType = ViewBag.sTyp
+            }),
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions()
+                {
+                    LinkToFirstPageFormat = string.Format("First"),
+                    LinkToPreviousPageFormat = string.Format("<"),
+                    LinkToNextPageFormat = string.Format(">"),
+                    LinkToLastPageFormat = string.Format("Last"),
+                    MaximumPageNumbersToDisplay = 3
+                },
+                    new AjaxOptions()
+                    {
+                        HttpMethod = "GET",
+                        UpdateTargetId = "ajaxNonPromotedAds"
+                    }
+                ))
+            }
+        </tr>
+    </thead>
+    @:<tbody>
+    for (int i = 0; i < Model.Count; i++)
+    {
+        var ad = Model.ElementAt(i);
+        @:<tr>
+            @:<td>
+                @:<div class="row panel panel-default">                                    
+                using (Ajax.BeginForm("AddPromotionToCart", "Promotion", new { @pageNumber = Model.PageNumber }, new AjaxOptions { UpdateTargetId = "myPromoteContainer" }))
+        {
+                @Html.AntiForgeryToken()
+                @:<div class="card-body">
+                if (ad.AdPhoto != null)
+            {
+                    <div class="col-12 col-sm-4 col-md-5 col-lg-2" style="margin-bottom:5px;">
+                        <a class="thumbnail mypromolist"><img alt="Image" src="~/Images/@ad.StringId.Substring(2, 4)/@ad.StringId.Substring(0, 4)/@ad.AdPhoto"></a>
+                    </div>
+            }
+            else
+            {
+                    <div class="col-12 col-sm-4 col-md-5 col-lg-2" style="margin-bottom:5px;">
+                        <a class="thumbnail mypromolist"><img alt="Image" src="/images/TH/noimage.png"></a>
+                    </div>
+            }
+                <div class="col-12 col-sm-8 col-md-7 col-lg-10" style="height:90px;margin-bottom:5px;">
+                    <h2>@ad.Title</h2>
+                </div>
+
+                @Html.Hidden("StringId", ad.StringId)
+
+                <div class="col-12 col-sm-12 col-md-6" style="padding:5px;">
+                    <div></div>
+                </div>
+                <div class="col-12 col-sm-12 col-md-6" style="padding:5px;">
+                    <div></div>
+                </div>
+                <div class="col-12 col-sm-12 col-md-6" style="padding:5px;">
+                    <div></div>
+                </div>
+                <div class="col-12 col-sm-12 col-md-6" style="padding:5px;">
+                    <div></div>
+                </div>
+                <input type="submit" value="Add To Cart" class="btn btn-sm btn-primary pull-right" />
+                @:</div>
+            @:</div>
+        }
+        @:</td>
+    @:</tr>        
+    }
+        @:</tbody>
+    @:</table>
+         <tfoot>            
+            <tr>
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                @if (Model.PageCount > 1)
+                {
+                    @Html.PagedListPager(Model, pageNumber => Url.Action("NonPromotedAdListPagination", "Promotion",
+            new
+            {
+                pageNumber,
+                searchType = ViewBag.sTyp
+            }),
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions()
+                {
+                    LinkToFirstPageFormat = string.Format("First"),
+                    LinkToPreviousPageFormat = string.Format("<"),
+                    LinkToNextPageFormat = string.Format(">"),
+                    LinkToLastPageFormat = string.Format("Last"),
+                    MaximumPageNumbersToDisplay = 3
+                },
+                    new AjaxOptions()
+                    {
+                        AllowCache = true,
+                        HttpMethod = "GET",
+                        UpdateTargetId = "ajaxNonPromotedAds"
+                    }
+                ))
+                }
+            </tr>
+        </tfoot>
+    }
+    else
+    {
+        @Html.ActionLink("Create Ad", "CreateAd", "ClassifiedAd", null, new { @class = "btn btn-primary" })
+    }
+

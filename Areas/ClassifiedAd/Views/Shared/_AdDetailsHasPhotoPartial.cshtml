@@ -1,0 +1,190 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.AdListDetailParent
+@using Trinbago_MVC5.IdentityExtensions
+
+<!--Title-->
+@{ Html.RenderPartial("_AdDetailsTitlePartial", Model); }
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-9 listing-wrapper listings-top listings-bottom">
+        <div class="row">
+            <!--Photo-->
+            <div class="col-12 center zoom-gallery" style="margin-bottom:10px;">
+                <div class="card">
+                    <div class="card-body" id="gallery">
+                        <div class="row">
+                            @{
+                                var pho = Model.Model1.Photos;
+                                var max = pho.Count();
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-9">
+                                <div class="photo-container">
+                                    <a class="venobox" data-gall="myGallery2" href="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = Model.Model1.Id, @FileName = pho.ElementAt(0).Raw_FileName })">
+                                        <img class="img-fluid photo-img" alt="@(Model.Model1.ModelName ?? Model.Model1.SubCategory.Name) Image" src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = Model.Model1.Id, @FileName = pho.ElementAt(0).AdDetails_FileName })" />
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-3">
+                                <div class="row">
+                                    @for (int i = 0; i < max; i++)
+                                    {
+                                        <div class="col-3 col-sm-2 col-md-3 col-lg-6" style="padding:5px;">
+                                            <div class="photo-container-thumbnail">  
+                                                <a class="venobox" data-gall="myGallery1" href="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = Model.Model1.Id, @FileName = pho.ElementAt(i).Raw_FileName })">
+                                                    <img class="img-fluid photo-img-thumbnail" alt="@(Model.Model1.ModelName ?? Model.Model1.SubCategory.Name) Image" src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = Model.Model1.Id, @FileName = pho.ElementAt(i).AdDetails_FileName })" />
+                                                </a>
+                                            </div>
+                                        </div>
+                                        if (i > 0)
+                                        {
+                                            <a class="venobox" data-gall="myGallery2" href="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = Model.Model1.Id, @FileName = pho.ElementAt(i).Raw_FileName })" hidden></a>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Details-->
+            <div id="maindetailbody" class="col-12">
+                @{
+                    HtmlString GMap = null;
+                    var cord = Model.Model1.AdInfo.SingleOrDefault(x => x.Name.Equals("Coordinates"));
+                    if (cord != null && !string.IsNullOrEmpty(cord.Description))
+                    {
+                        var loc = cord.Description.Split(',');
+                        GMap = new HtmlString("<div class=\"row\">" +
+                                                "<div class='col-6'>" +
+                                                    "<a class='venobox btn btn-outline-dark' style='font-weight:600;height:54px;width:120px;' data-vbtype='iframe' href='https://www.google.com/maps/embed/v1/place?key=AIzaSyBqDqfXXFwChQvgEIrWcGtChwXGbTfuOXM&q=" + loc[0] + "," + loc[1] + "&zoom=16'>" +
+                                                        "<img src =\"/Images/icons/google_maps_logo.png\" style=\"width:50px;margin-left:-10px; margin-top:-5px;margin-bottom:-5px;\" alt='google maps icon'>Google</img>" +
+                                                    "</a>" +
+                                                "</div>" +
+                                                "<div class='col-6'>" +
+                                                    "<a class='btn btn-outline-dark d-sm-none' style='font-weight:600;height:54px;width:125px;' href='waze://?ll=" + loc[0] + "," + loc[1] + "' target='_blank\'>" +
+                                                        "<img src =\"/Images/icons/waze.png\" style=\"width:50px;margin-left:-10px; margin-top:-5px;margin-bottom:-5px;\" alt='waze icon'>Waze</img>" +
+                                                    "</a>" +
+                                                "</div>" +
+                                                "</div>" +
+                                                "<hr style='border:0px;'/>");
+                    }
+                }
+                @GMap
+                <!--Ad Details-->
+                <div class="row">
+                    <h3 class="fancy col-12">
+                        <span id="fancy-span1">Ad details</span>&nbsp;<span id="fancy-span2" class="pull-right">Views: @Model.Model1.AdViewsCount</span>
+                    </h3>
+                    @if (Model.Model1.AdInfo != null)
+                    {
+                        if (Model.Model1.AdInfo.Count > 0)
+                        {
+                            if (!Model.Model1.AdInfo.FirstOrDefault().Name.Equals("Species") && !Model.Model1.AdInfo.FirstOrDefault().Name.Equals("Coordinates"))
+                            {
+                                <div class="col-12 col-sm-6">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            @foreach (var ai in Model.Model1.AdInfo)
+                                            {
+                                                if (!string.IsNullOrEmpty(ai.Description))
+                                                {
+                                                    if (ai.Name.Equals("Mileage"))
+                                                    {
+                                                        <tr>
+                                                            <th>@ai.Name</th>
+                                                            <td>@ai.Description <strong> km</strong></td>
+                                                        </tr>
+                                                    }
+                                                    else if (ai.Name.Equals("Size"))
+                                                    {
+                                                        <tr>
+                                                            <th>@ai.Name</th>
+                                                            <td>@ai.Description <strong> sq ft</strong></td>
+                                                        </tr>
+                                                    }
+                                                    else if (!ai.Name.Equals("Coordinates"))
+                                                    {
+                                                        <tr>
+                                                            <th>@ai.Name</th>
+                                                            <td>@ai.Description</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        }
+                    }
+                    <div class="col-12 col-sm-6">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Ad ID</th>
+                                    <td>#@Model.Model1.Id</td>
+                                </tr>
+                                <tr>
+                                    <th>Ad Type:</th>
+                                    <td>@Model.Model1.AdType</td>
+                                </tr>
+                                <tr>
+                                    <th>Price:</th>
+                                    <td>
+                                        @{
+                                            if (Model.Model1.PriceInfo.Equals("Please Contact"))
+                                            {
+                                                @Model.Model1.PriceInfo
+                                            }
+                                            else if (Model.Model1.PriceInfo.Equals("None"))
+                                            {
+                                                <p>@Model.Model1.Price</p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    @Model.Model1.Price
+                                                    &nbsp;<strong class="highlighted">
+                                                        @Model.Model1.PriceInfo
+                                                    </strong>
+                                                </p>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--More Info-->
+                @if (!string.IsNullOrEmpty(Model.Model1.Description))
+                {
+                <div class="row">
+                    <h3 class="fancy col-12">
+                        <span id="fancy-span1">More Info</span>
+                    </h3>
+                    <div class="col-12" style="-ms-word-wrap: break-word; word-wrap: break-word;line-height:20px;">
+                        @Html.Raw(Model.Model1.Description)
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!--Contact-->
+    @{Html.RenderPartial("_AdDetailsContactPartial", Model); }
+</div>
+<!--Related Ads-->
+@{Html.RenderPartial("_AdDetailsRelatedAdPartial", Model);}
+
+@if (User.Identity.IsAuthenticated && Model.Model1.ContactPrivacy && User.Identity.IsEmailConfirmed() || !Model.Model1.ContactPrivacy)
+{
+    <!--Modal Contact-->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        @{Html.RenderPartial("_AdDetailsEmailUserPartial", Model.Model2);}
+    </div>
+    <!--/Modal-->
+}
+<!--Modal Report-->
+<div class="modal fade" id="myModalReport" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    @{Html.RenderPartial("_AdDetailsReportPartial", Model.Model3);}
+</div>
+<!--/Modal Report-->

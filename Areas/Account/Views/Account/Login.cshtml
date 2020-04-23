@@ -1,0 +1,55 @@
+﻿@using Trinbago_MVC5.Areas.Account.Models
+@model Login
+
+@{
+    ViewBag.Title = "Log in";
+}
+
+
+<hr class="topbar" />
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-8 offset-md-3">
+            @if (ViewBag.ErrorMsg != null)
+            {
+                <span class="col-sm-12" style="font-size:large;color:red;font-weight:600;">@ViewBag.ErrorMsg</span>
+            }
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-md-11 col-sm-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h2 class="formhead">Login With</h2>
+                                    @{Html.RenderPartial("_ExternalLoginsListPartial", new ExternalLoginList { ReturnUrl = ViewBag.ReturnUrl });}
+                                    <h2 class="formhead">Or Sign in Locally</h2>
+                                    @using (Html.BeginForm("Login", "Account", new { Area = "Account", ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+                                    {
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                        @Html.AntiForgeryToken()
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Email)
+                                            @Html.TextBoxFor(m => m.Email, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.Email)
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Password)
+                                            @Html.PasswordFor(m => m.Password, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.Password)
+                                        </div>
+                                        <div class="form-group text-right mb-5">
+                                            @Html.ActionLink("Forgot password?", "ForgotPass", "Account", routeValues: new { Area = "Account" }, htmlAttributes: new { style = "color:blue" })
+                                        </div>                                        
+                                        <input type="submit" value="Log in" class="btn btn-primary" />
+                                        <a href="@Url.Action("Register", "Account", new { Area = "Account", returnUrl = ViewBag.ReturnUrl})" class="btn btn-outline-primary float-right">Sign Up</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

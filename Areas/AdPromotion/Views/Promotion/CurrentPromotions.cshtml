@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Trinbago_MVC5.Areas.Promotion.Models.ClassifiedAdPromoted>
+@{ 
+    ViewBag.Title = "Current Promoted Ads";
+}
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Ad List-->
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header">Current Promoted Ads</div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @{
+                                        if (Model != null && Model.Count() > 0)
+                                        {
+                                            <table class="table table-condensed">
+                                                <tbody>
+                                            @foreach (var ad in Model)
+                                            { 
+                                                <tr>
+                                                    <td>
+                                                        @if (ad.AdPhoto != null)
+                                                        {
+                                                            <div class="col-12 col-sm-4 col-md-5 col-lg-3" style="margin-bottom:5px;">
+                                                                <a href="@Url.Action("ListDetails", "ClassifiedAd", new { stringId = ad.StringId })" class="thumbnail mypromolist"><img alt="Image" src="~/Images/@ad.StringId.Substring(2, 4)/@ad.StringId.Substring(0, 4)/@ad.AdPhoto"></a>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="col-12 col-sm-4 col-md-5 col-lg-3" style="margin-bottom:5px;">
+                                                                <a href="@Url.Action("ListDetails", "ClassifiedAd", new { stringId = ad.StringId })" class="thumbnail mypromolist"><img alt="Image" src="/images/TH/noimage.png"></a>
+                                                            </div>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <div class="col-12 col-sm-8 col-md-7 col-lg-9">
+                                                            <p><a id="viewalllink" href="@Url.Action("ListDetails", "ClassifiedAd", new { stringId = @ad.StringId })" style="display:block;overflow-wrap:break-word;font-size:medium;"><h2 class="clean">@ad.Title</h2></a></p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                             }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No ads promoted</p>
+                                            @Html.ActionLink("Promote an Ad", "PromoteAds", "Promotion", null, new { @class = "btn btn-primary" })
+                                        }
+                                    } 
+                                </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/Ad List-->
+    </div>
+    <br>
+</div>

@@ -1,0 +1,56 @@
+﻿@model Trinbago_MVC5.Areas.User.Models.PremiumUserListDetail
+<!--PUser Info-->
+
+@if (Model != null)
+{
+    <div class="row col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7 col-sm-7">
+                        <div class="form-group">
+                            <div style="border:double gainsboro;border-radius:4px;width:105px;height:90px;">
+                                @if (Model.PremiumUserPhoto != null)
+                                {
+                                    <img alt="" style="height:100%;width:100%;" src="~/Images/@Model.PremiumUserPhoto.StringId.Substring(2, 4)/@Model.PremiumUserPhoto.StringId.Substring(0, 4)/@Model.PremiumUserPhoto.FileName">
+                                }
+                                else
+                                {
+                                    <img alt="" style="height:100%;width:100%;" src="/images/TH/noimage.png">
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5 col-sm-5" style="padding:0px;">
+                        <br />
+                        <p>@(Model.ClassifiedAdsViewCount == 1 ? "1 View" : Model.ClassifiedAdsViewCount + " Views")</p>
+                        <p>@(Model.UserReviewsCount == 1 ? "1 Review" : Model.UserReviewsCount + " Reviews")</p>
+                        <p>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                        </p>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <a style="color:blue;" href="~/@Model.UrlName">trinbagohotspot.com/@Model.UrlName</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            @if (Model.PremiumUserInfos.SingleOrDefault(x => x.Name.Equals("Address")) != null)
+                            {
+                                @Model.PremiumUserInfos.SingleOrDefault(x => x.Name.Equals("Address")).Description
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+<!--/Puser info-->

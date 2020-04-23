@@ -1,0 +1,50 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdReportForm
+@using Trinbago_MVC5.IdentityExtensions
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Report Ad</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" arial-label="Close">&times;</button>            
+        </div>
+        @using (Ajax.BeginForm("ReportAd", "ClassifiedAd", new { Area = "ClassifiedAd" }, new AjaxOptions { UpdateTargetId = "myModalReport" }, htmlAttributes: new { @class = "form-vertical" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="modal-body">
+                <fieldset>
+                    @Html.HiddenFor(model => model.Id)
+                    <p class="hidden-xs">"@Model.Title"</p>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ReasonTitle)
+                                @Html.DropDownListFor(model => model.ReasonTitle, new SelectList(new List<string>() { "Already Sold", "Duplicate / Spam", "Miscategorized", "Prohibited / Scam", "Other" }, ""), "-Please Select-", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ReasonTitle)
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ReportingUser)
+                                @Html.TextBoxFor(model => model.ReportingUser, htmlAttributes: new { @class = "form-control", placeholder = "Enter your email address", @Value = User.Identity.GetUserEmail() })
+                                @Html.ValidationMessageFor(model => model.ReportingUser)
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ReasonDescription)
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        @Html.TextAreaFor(model => model.ReasonDescription, htmlAttributes: new { @class = "form-control", rows = "4", placeholder = "Example: Ad is in the wrong category", style = "max-width:100%;" })
+                                        @Html.ValidationMessageFor(model => model.ReasonDescription)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" value="Submit" class="btn btn-primary pull-right" />
+            </div>
+        }
+    </div>
+</div>

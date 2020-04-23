@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Trinbago_MVC5.Models.CategoryList>
+@using Trinbago_MVC5.IdentityExtensions
+@{
+    ViewBag.Title = "Category List";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <div class="col-md-9">
+            <div class="card" style="min-width: 320px;">
+                <div class="card-header"><h1>Category list&nbsp;<small>(@User.Identity.GetPosterName())</small></h1></div>
+                <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @if (User.IsInRole("Admin")) { 
+                                    <p>
+                                        @Html.ActionLink("Create New", "CategoryAdd", null, htmlAttributes: new { @class = "btn btn-primary btn-sm", disabled = "true" })
+                                    </p>
+                                }
+                                <table class="table edit-listings table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td class="main-td">
+                                                    @Html.DisplayFor(model => item.Name)
+                                                </td>
+                                                <td>
+                                                    <!--Html.ActionLink("Edit Name", "CategoryEdit", new { id = item.Id }) |-->
+                                                    @Html.ActionLink("Edit Seo", "CategorySeoEdit", new { id = item.Id }) |
+                                                    @Html.ActionLink("Details", "CategoryDetails", new { id = item.Id })
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <br>
+</div>

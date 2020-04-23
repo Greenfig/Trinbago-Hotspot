@@ -1,0 +1,322 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.AdlistPage
+@using PagedList.Mvc
+@using Trinbago_MVC5.Extensions
+
+<div class="row">
+    <div class="col-12 d-lg-none">
+        <div class="row">
+            <div class="col-6 mb-2 mt-2">
+                <button class="btn btn-sm btn-outline-primary col-12" data-toggle="collapse" data-target="#refineSearch">Show Filter</button>
+            </div>
+            <div class="col-6 mb-2 mt-2">
+                @Html.ActionLink("Post Ad", "CreateAd", "ClassifiedAdManage", new { Area = "ClassifiedAd", @subCatId = string.Empty }, new { @class = "btn btn-sm btn-outline-postad col-12" })
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 mt-2 mb-2">
+        <ol class="breadcrumb d-none d-lg-flex m-0">
+            <li class="breadcrumb-item">@Html.ActionLink("All Categories", "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = string.Empty, @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = string.Empty, @subCatId = string.Empty }, null)</li>
+            @{
+                // Has a category
+                if (Model.Category != null)
+                {
+                    <li class="breadcrumb-item">@Html.ActionLink(Model.Category.Name, "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = Model.Category.SeoName, @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = Model.Category.Id, @subCatId = string.Empty }, null)</li>
+                }
+                // Has a subcategory
+                if (Model.SubCategory != null)
+                {
+                    <li class="breadcrumb-item">@Html.ActionLink(Model.SubCategory.Name, "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = Model.SubCategory.SeoName, @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = ViewBag.CategoryId, @subCatId = Model.SubCategory.Id }, null)</li>
+                }
+                if (!string.IsNullOrEmpty(ViewBag.SearchItem))
+                {
+                    <li class="breadcrumb-item"><strong>Search Results For: @ViewBag.SearchItem in <em>@ViewBag.DescriptionLocation</em></strong> (@Model.ClassifiedAdList.TotalItemCount)</li>
+                }
+            }
+        </ol>
+    </div>
+    <!--Filter-->
+    @{ Html.RenderPartial("_AdListRefineFilterPartial", Model); }
+    <!--/Filter-->
+    <div class="col-12 col-sm-12 col-md-12 col-lg-8 listings">
+        <div class="col-12 p-0 pr-lg-3">
+            <!--Ad List-->
+            <div class="row listing-row">
+                <div class="pull-left col-12 col-sm-12">
+                    <span style="font-size:12px;"><h1 class="clean">@ViewBag.HeaderTitle</h1></span>
+                </div>
+            </div>
+            <!--Featured Ad-->
+            @{
+                if (Model.FeaturedAds != null)
+                {
+                    if (Model.FeaturedAds.Count() > 0)
+                    {
+                        Html.RenderPartial("_AdListFeaturedAdPartial", Model.FeaturedAds);
+                    }
+                }
+                if (Model.ClassifiedAdList != null)
+                {
+                    if (Model.ClassifiedAdList.PageCount == 0)
+                    {
+                    <div class="col-sm-12" style="background-color:#f0d490;border-radius:5px;border:solid 2px;padding:10px;">
+                        @{
+                            if (ViewBag.AdSearchIdNotFound != null)
+                            {
+                                <p><b>@ViewBag.AdSearchIdNotFound </b></p><br />
+                            }
+                            else if (ViewBag.SearchItem != null && ViewBag.SearchItem != "")
+                            {
+                                <p>No results found for (<b> @ViewBag.SearchItem </b>) in <b>@ViewBag.NotFoundText </b></p><br />
+                            }
+                            else
+                            {
+                                <p>No results found in <b>@ViewBag.NotFoundText </b></p><br />
+                            }
+                        }
+                        <p>Try broadening your search criteria or <b><a style="text-decoration:underline;" href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = ViewBag.SeoCurrentCategory, @location = "trinidad-tobago", @catId = ViewBag.CategoryId, @subCatId = ViewBag.SubCategoryId, @CountryId = 0, @RegionId = 0 })">Reset All Filters!</a></b></p>
+                    </div>
+                    }
+                    else
+                    {
+
+                        if (Model.ClassifiedAdList.Count > 5)
+                        {
+                            <!--Google Ad top-->
+                            <div class="mb-3 mt-3">
+                                @Html.GoogleAdSense("g-adsense-adlist_top")
+                            </div>
+                        }
+                        <!--Ad List-->
+                        foreach (var ad in Model.ClassifiedAdList)
+                        {
+                            if (!ad.TopAdStatus)
+                            {
+                            <div id="viewalllink" class="hover" data-url-href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", @category = ad.SeoCategory, @location = ad.SeoLocation, @Id = ad.Id, @title = ad.SeoTitle })">
+                                
+                                <div class="row regular listing-row">
+                                    @{
+                                        if (ad.UrgentAdStatus)
+                                        {
+                                            <div class="ribbon-wrapper-base"><div class="ribbon-urgent">&nbsp;<span>Urgent</span></div></div>
+                                        }
+                                        if (ad.AdPhoto)
+                                        {
+                                            <div class="col-5 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:5px;">
+                                                <div id="favourite" class="@(ad.IsFavourited ? "favourite active" : "favourite")" data-fav-id="@ad.Id"></div>
+                                                <div class="thumbnail list"><img title="@(ad.ModelName ?? ad.SubCategoryName) Image" alt="@(ad.ModelName ?? ad.SubCategoryName) Image" src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = ad.Id, @FileName = ad.AdList_FileName })"></div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-5 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:5px;">
+                                                <div id="favourite" class="@(ad.IsFavourited ? "favourite active" : "favourite")" data-fav-id="@ad.Id"></div>
+                                                <div class="thumbnail list"><img title="@(ad.ModelName ?? ad.SubCategoryName) Image" alt="@(ad.ModelName ?? ad.SubCategoryName) Image" src="/images/TH/noimage.png"></div>
+                                            </div>
+                                        }
+                                    }
+                                    <div class="col-7 col-sm-8 col-md-9 col-lg-9" style="height:145px;">
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="display:block;overflow-wrap:break-word;font-size:medium;">
+                                            <span class="pull-right col-12 col-sm-4 col-md-3 p-0" style="margin-bottom:5px;font-weight:bold;font-size:15px;">@ad.Price</span>
+                                            <h2 class="clean col-12 col-sm-8 col-md-9" style="margin-bottom:5px;color:#0b5fa9;padding-left:0;"><a href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", @category = ad.SeoCategory, @location = ad.SeoLocation, @Id = ad.Id, @title = ad.SeoTitle })">@(ad.Status == 1 ? new HtmlString("<span class='glow'>[SOLD] </span>" + "<span style='text-decoration: line-through;'>" + @ad.Title + "</span>") : ad.Status == 2 ? new HtmlString("<span class='glow'>[RENTED] </span>" + "<span style='text-decoration: line-through;'>" + @ad.Title + "</span>") : new HtmlString("<span>" + @ad.Title + "</span>"))</a></h2>
+                                        </div>
+                                        @{var days = @DateTime.Now.Date.Subtract(@ad.TimeStamp.Date).Days;}
+                                        @{
+                                            if (days == 0)
+                                            {
+                                                <p class="muted col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="margin-top:5px;margin-bottom:5px;font-size:12px;">Posted today</p>
+                                            }
+                                            else if (days == 1)
+                                            {
+                                                <p class="muted col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="margin-top:5px;margin-bottom:5px;font-size:12px;">Posted @days day ago</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="muted col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="margin-top:5px;margin-bottom:5px;font-size:12px;">Posted @days days ago</p>
+                                            }
+                                        }
+                                        @{
+                                            <p class="muted" style="margin-bottom:5px;">@ad.CategoryName</p>
+                                            //--------------------------------
+                                            <p id="rawdesc" class="d-none d-sm-block">@ad.HtmlFreeDescription</p>
+                                        }
+                                        <div class="row">
+                                            <div class="col-12" style="position:absolute;bottom:0;">
+                                                <p class="clean" style="position:relative;padding:4px 0 2px 0;color:#7a7a7a;font-size:11px;">@ad.SubCategoryName</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            }
+                            else
+                            {
+                            <div id="viewalllink" class="hover" data-url-href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", @category = ad.SeoCategory, @location = ad.SeoLocation, @Id = ad.Id, @title = ad.SeoTitle })">
+                            <div class="row regular listing-row">
+                                @{
+                                if (ad.UrgentAdStatus)
+                                {
+                                    @:<div class="ribbon-wrapper-base"><div class="ribbon-urgent-topad">&nbsp;<span>Urgent Top Ad</span></div></div>
+                                }
+                                else
+                                {
+                                    @:<div class="ribbon-wrapper-base"><div class="ribbon-topad">&nbsp;<span>Top Ad</span></div></div>
+                                }
+                                    if (ad.AdPhoto)
+                                    {
+                                        <div class="col-5 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:5px;">
+                                            <div id="favourite" class="@(ad.IsFavourited ? "favourite active" : "favourite")" data-fav-id="@ad.Id"></div>
+                                            <div class="thumbnail list"><img title="@(ad.ModelName ?? ad.SubCategoryName) Image" alt="@(ad.ModelName ?? ad.SubCategoryName) Image" src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = ad.Id, @FileName = ad.AdList_FileName })"></div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-5 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:5px;">
+                                            <div id="favourite" class="@(ad.IsFavourited ? "favourite active" : "favourite")" data-fav-id="@ad.Id"></div>
+                                            <div class="thumbnail list"><img title="@(ad.ModelName ?? ad.SubCategoryName) Image" alt="@(ad.ModelName ?? ad.SubCategoryName) Image" src="/images/TH/noimage.png"></div>
+                                        </div>
+                                    }
+                                }
+                                <div class="col-7 col-sm-8 col-md-9 col-lg-9" style="height:145px;">
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="display:block;overflow-wrap:break-word;font-size:medium;">
+                                        <span class="pull-right col-12 col-sm-4 col-md-3 p-0" style="margin-bottom:5px;font-weight:bold;font-size:15px;">@ad.Price</span>
+                                        <h2 class="clean col-12 col-sm-8 col-md-9" style="margin-bottom:5px;color:#0b5fa9;padding-left:0;"><a href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", @category = ad.SeoCategory, @location = ad.SeoLocation, @Id = ad.Id, @title = ad.SeoTitle })">@(ad.Status == 1 ? new HtmlString("<span class='glow'>[SOLD] </span>" + "<span style='text-decoration: line-through;'>" + @ad.Title + "</span>") : ad.Status == 2 ? new HtmlString("<span class='glow'>[RENTED] </span>" + "<span style='text-decoration: line-through;'>" + @ad.Title + "</span>") : new HtmlString("<span>" + @ad.Title + "</span>"))</a></h2>
+                                    </div>
+                                    @{var days = @DateTime.Now.Date.Subtract(@ad.TimeStamp.Date).Days;}
+                                    @{
+                                        if (days == 0)
+                                        {
+                                            <p class="muted col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="margin-top:5px;margin-bottom:5px;font-size:12px;">Posted today</p>
+                                        }
+                                        else if (days == 1)
+                                        {
+                                            <p class="muted col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="margin-top:5px;margin-bottom:5px;font-size:12px;">Posted @days day ago</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="muted col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="margin-top:5px;margin-bottom:5px;font-size:12px;">Posted @days days ago</p>
+                                        }
+                                    }
+                                    @{
+                                        <p class="muted" style="margin-bottom:5px;">@ad.CategoryName</p>
+                                        //--------------------------------
+                                        <p id="rawdesc" class="d-none d-sm-block">@ad.HtmlFreeDescription</p>
+                                    }
+                                    <div class="row">
+                                        <div class="col-12" style="position:absolute;bottom:0;">
+                                            <p class="clean" style="position:relative;padding:4px 0 2px 0;color:#7a7a7a;font-size:11px;">@ad.SubCategoryName</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        }
+
+                    }
+                }
+            }
+
+            }
+            Page @(Model.ClassifiedAdList.PageCount < Model.ClassifiedAdList.PageNumber ? 0 : Model.ClassifiedAdList.PageNumber) of @Model.ClassifiedAdList.PageCount
+            @{
+                if (Model.ClassifiedAdList.PageCount > 1)
+                {
+                    @Html.PagedListPager(Model.ClassifiedAdList, pageNumber => {
+                   if(pageNumber == 1)
+                   {
+                    return Url.Action("AdList", "ClassifiedAd",
+                        new
+                        {
+                            Area = "ClassifiedAd",
+                            category = ViewBag.SeoCurrentCategory,
+                            location = ViewBag.SeoLocation,
+                            catId = ViewBag.CategoryId,
+                            subCatId = ViewBag.SubCategoryId,
+                            searchString = ViewBag.SearchItem,
+                            adtypeString = ViewBag.AdType,
+                            searchOnlyOption = ViewBag.SearchOnlyOption,
+                            minPrice = ViewBag.Filter_minPrice,
+                            maxPrice = ViewBag.Filter_maxPrice,
+                            minMile = ViewBag.Filter_minMile,
+                            maxMile = ViewBag.Filter_maxMile,
+                            modelName = ViewBag.Filter_modelName,
+                            minYear = ViewBag.Filter_minYear,
+                            maxYear = ViewBag.Filter_maxYear,
+                            modEngineSize = ViewBag.Filter_modelEngineSize,
+                            modelMake = ViewBag.Filter_modelMake,
+                            modelBodyType = ViewBag.Filter_modelBodyType,
+                            modelDrivetrain = ViewBag.Filter_modelDrivetrain,
+                            modelTransmission = ViewBag.Filter_modelTransmission,
+                            modelCondition = ViewBag.Filter_modelCondition,
+                            modelColour = ViewBag.Filter_modelColour,
+                            modelJobType = ViewBag.Filter_modelJobType,
+                            modelSalaryInfo = ViewBag.Filter_modelSalaryInfo,
+                            modelRentalType = ViewBag.Filter_modelRentalType,
+                            modelBedrooms = ViewBag.Filter_modelBedrooms,
+                            modelBathrooms = ViewBag.Filter_modelBathrooms,
+                            modelFurnished = ViewBag.Filter_modelFurnished,
+                            CountryId = ViewBag.CountryId,
+                            RegionId = ViewBag.RegionId,
+                            minSize = ViewBag.Filter_minSize,
+                            maxSize = ViewBag.Filter_maxSize,
+                            modelBreed = ViewBag.Filter_modelageType,
+                            ageType = ViewBag.Filter_modelageType
+                        });
+                       }
+                   else{
+                    return Url.Action("AdList", "ClassifiedAd",
+                        new
+                        {
+                            Area = "ClassifiedAd",
+                            category = ViewBag.SeoCurrentCategory,
+                            location = ViewBag.SeoLocation,
+                            catId = ViewBag.CategoryId,
+                            subCatId = ViewBag.SubCategoryId,
+                            pageNumber,
+                            searchString = ViewBag.SearchItem,
+                            adtypeString = ViewBag.AdType,
+                            searchOnlyOption = ViewBag.SearchOnlyOption,
+                            minPrice = ViewBag.Filter_minPrice,
+                            maxPrice = ViewBag.Filter_maxPrice,
+                            minMile = ViewBag.Filter_minMile,
+                            maxMile = ViewBag.Filter_maxMile,
+                            modelName = ViewBag.Filter_modelName,
+                            minYear = ViewBag.Filter_minYear,
+                            maxYear = ViewBag.Filter_maxYear,
+                            modEngineSize = ViewBag.Filter_modelEngineSize,
+                            modelMake = ViewBag.Filter_modelMake,
+                            modelBodyType = ViewBag.Filter_modelBodyType,
+                            modelDrivetrain = ViewBag.Filter_modelDrivetrain,
+                            modelTransmission = ViewBag.Filter_modelTransmission,
+                            modelCondition = ViewBag.Filter_modelCondition,
+                            modelColour = ViewBag.Filter_modelColour,
+                            modelJobType = ViewBag.Filter_modelJobType,
+                            modelSalaryInfo = ViewBag.Filter_modelSalaryInfo,
+                            modelRentalType = ViewBag.Filter_modelRentalType,
+                            modelBedrooms = ViewBag.Filter_modelBedrooms,
+                            modelBathrooms = ViewBag.Filter_modelBathrooms,
+                            modelFurnished = ViewBag.Filter_modelFurnished,
+                            CountryId = ViewBag.CountryId,
+                            RegionId = ViewBag.RegionId,
+                            minSize = ViewBag.Filter_minSize,
+                            maxSize = ViewBag.Filter_maxSize,
+                            modelBreed = ViewBag.Filter_modelageType,
+                            ageType = ViewBag.Filter_modelageType
+                        });
+                   }
+               },
+                new PagedListRenderOptions { LinkToFirstPageFormat = string.Format("First"), LinkToPreviousPageFormat = string.Format("<"), LinkToNextPageFormat = string.Format(">"), LinkToLastPageFormat = string.Format("Last"), MaximumPageNumbersToDisplay = 3 })
+                }
+            }
+            <div class="col-12" style="text-align:right;">
+                Sign up and post for FREE @Html.ActionLink("Post Ad", "CreateAd", "ClassifiedAdManage", new { Area = "ClassifiedAd", subCatId = string.Empty }, new { @id = "postadlayout", @class = "btn btn-warning btn-sm", @style = "border-radius:0;" })
+            </div>
+        </div>
+        @if (Model.ClassifiedAdList != null && Model.ClassifiedAdList.Count > 5)
+        {
+            <!--Google Ad-->
+            <div class="mb-3 mt-3">
+                @Html.GoogleAdSense("g-adsense-adlist_bottom")
+            </div>
+        }
+    </div>
+</div>

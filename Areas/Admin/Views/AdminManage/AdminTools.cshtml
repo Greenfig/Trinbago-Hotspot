@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "Admin Tools";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--AdminTools-->
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header">Manage account</div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+                            <h2 style="font-weight:900">@Ajax.ActionLink("Recalculate Ad Count", "AdminCountAds", new AjaxOptions { OnSuccess = "recalc" })</h2>
+                            <hr />
+                            <h2 style="font-weight:900">@Ajax.ActionLink("Update Lucene Index", "AdminUpdateLuceneIndex", new AjaxOptions { OnSuccess = "luc" })</h2>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/AdminTools-->
+    </div>
+    <br>
+</div>
+@section scripts{
+    
+    <script>
+        function recalc() {
+            alert("Ad Count Recalculated!");
+        }
+        function luc() {
+            alert("Lucene Index Repopulated!");
+        }
+    </script>
+}

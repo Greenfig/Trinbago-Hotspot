@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="en-tt">
+<!--Mini Profiler-->
+@if (HttpContext.Current.IsDebuggingEnabled)
+{
+    @:@using StackExchange.Profiling;
+}
+<head xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="https://ogp.me/ns/fb#">
+    @if (!HttpContext.Current.IsDebuggingEnabled)
+    {
+        @:<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        @:<script>
+        @:(adsbygoogle = window.adsbygoogle || []).push({
+            @:google_ad_client: "ca-pub-6449002362205302",
+            @:enable_page_level_ads: true
+        @:});
+    @:</script>
+    }
+    @Scripts.RenderFormat(@"<script src=""{0}"" async></script>", "~/bundles/public")    
+    @RenderSection("social", false)
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="fb:app_id" content="@System.Configuration.ConfigurationManager.AppSettings["facebookAppId"]" />
+    <meta name='google-site-verification' content='X1q28a4WMqD4c5GYGhNvVAT0jdEliVF5bWUKaTDa7gM' />
+    <meta name='msvalidate.01' content='973D7ED2950530982A8AC4858BFAD899' />
+    <meta name="yandex-verification" content="a3ac6ed522bb53bb" />
+    @ViewBag.MetaDesc
+    @ViewBag.KeywordMeta
+    @ViewBag.UrlOpenGraphMeta
+    @ViewBag.TitleOpenGraphMeta
+    @ViewBag.DesOpenGraphMeta
+    @ViewBag.ImgOpenGraphMeta
+    @ViewBag.NOCHE
+    @ViewBag.MetaIndexFollow
+    @ViewBag.Canonical
+    <link href="~/tbhsicon.png" rel="shortcut icon" type="image/svg" style="width:100%;height:auto;" />
+    <link rel="publisher" href="https://plus.google.com/104086073285455602566" />
+    @ViewBag.ImgLinkOverride
+    @Styles.Render("~/Content/css")    
+    @RenderSection("head", false)    
+    <title>@ViewBag.Title - TrinbagoHotspot</title>
+</head>
+<body>
+    @{Html.RenderPartial("_MenuPartial"); }
+    @RenderBody()
+    <!--Footer-->
+    <footer class="footer pt-4 mt-4">
+        <!--Footer Links-->
+        <div class="container text-center text-md-left">
+            <div class="row">
+                <!--Cat column-->
+                <div class="col-md-2 mx-auto">
+                    <h5 class="text-capitalize mb-4 mt-3 font-weight-bold">Categories</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "classified-ads", @catId = 0, @subCatId = 0 })">All Categories</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "vehicles", @catId = 1, @subCatId = 0 })">Vehicles</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "real-estate", @catId = 2, @subCatId = 0 })">Real Estate</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "pets", @catId = 3, @subCatId = 0 })">Pets</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "business-services", @catId = 4, @subCatId = 0 })">Business Services</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "buy-sell", @catId = 5, @subCatId = 0 })">Buy & Sell</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "jobs", @catId = 6, @subCatId = 0 })">Jobs</a>
+                        </li>
+                    </ul>
+                </div>
+                <hr class="clearfix w-100 d-md-none">
+                <!--More column-->
+                <div class="col-md-2 mx-auto">
+                    <h5 class="text-capitalize mb-4 mt-3 font-weight-bold">More Info</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            @Html.ActionLink("Home", "Index", "Home", new { Area = "" }, null)
+                        </li>
+                        <li>
+                            @Html.ActionLink("Tips and Guides", "Guides", "Home", new { Area = "" }, null)
+                        </li>
+                        <li>
+                            @Html.ActionLink("Terms and Conditions", "Terms", "Home", new { Area = "" }, null)
+                        </li>
+                        <li>
+                            @Html.ActionLink("Privacy Policy", "Privacy", "Home", new { Area = "" }, null)
+                        </li>
+                        <li>
+                            @Html.ActionLink("About Us", "About", "Home", new { Area = "" }, null)
+                        </li>
+                        <li>
+                            @Html.ActionLink("Help/Contact Us", "Contact", "Home", new { Area = "" }, null)
+                        </li>
+                    </ul>
+                </div>
+                <hr class="w-100 d-md-none">
+                <!--What we do column-->
+                <div class="col-md-6 what-we-do">
+                    <h5 class="text-capitalize mb-4 mt-3 font-weight-bold">TrinbagoHotspot - @(ViewBag.WhatWeDoTitle ?? "Classified Ads")</h5>
+                    <p>
+                        @(
+                            ViewBag.WhatWeDoDesc != null ? new HtmlString(ViewBag.WhatWeDoDesc) : 
+                            new HtmlString("TrinbagoHotspot is a " +
+                            "<a style='font-weight:bold;' href="+Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "classified-ads", @catId = 0, @subCatId = 0 })+">Free Classified</a> ad " +
+                            "website for Triniadad & Tobago. We provide users the opportunity to post free classifieds on a platform that is mobile friendly and easily accessable with powerful search engine capabilities. " +
+                            "Find Vehicles, Real Estate, Jobs, Business Services and Buy & Sell and more in Trinidad and Tobago!")
+                        )
+                    </p>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <!--Call to action-->
+        <div class="text-center py-3 d-sm-flex justify-content-sm-center">
+            <ul class="list-unstyled list-inline mb-0">
+                <li class="list-inline-item">
+                    <h5 class="mb-1 mr-sm-3">Register and Post for FREE!</h5>
+                </li>
+            </ul>
+            <ul class="list-unstyled list-inline mb-0">
+                <li class="list-inline-item">
+                    <a href="@Url.Action("Register","Account", new { Area = "Account" })" class="btn btn-outline-primary">Sign up!</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="btn btn-postad" href="@Url.Action("CreateAd", "ClassifiedAdManage", new { Area = "ClassifiedAd", subCatId = string.Empty })">Post an Ad</a>                    
+                </li>
+            </ul>
+        </div>
+        <hr>
+        <!--Social buttons-->
+        <div class="text-center">
+            <ul class="list-unstyled list-inline">
+                <li class="list-inline-item">
+                    <a class="btn-floating btn-sm btn-fb mx-1" href="@(ViewBag.CategoryId == null ? "https://www.facebook.com/TrinbagoHotspot/" :
+                                                                       ViewBag.CategoryId == 1 ? "https://www.facebook.com/Vehicles-at-TrinbagoHotspot-737462723076349/" :
+                                                                       ViewBag.CategoryId == 2 ? "https://www.facebook.com/RealEstateTBHS/":
+                                                                       ViewBag.CategoryId == 5 ? "https://www.facebook.com/groups/609760575888537/" : "https://www.facebook.com/TrinbagoHotspot/")">
+                        <i class="fa fa-facebook" style="color:white;"> </i>
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="btn-floating btn-sm btn-tw mx-1" href="https://twitter.com/trinbagohotspot">
+                        <i class="fa fa-twitter" style="color:white;"> </i>
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="btn-floating btn-sm btn-gplus mx-1" href="https://plus.google.com/u/1/communities/115256189142100465220">
+                        <i class="fa fa-google-plus" style="color:white;"> </i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!--Copyright-->
+        <div class="py-3 text-center">            
+            <div class="col-12">
+                <a href="https://www.positivessl.com" style="font-family: arial; font-size: 10px; color: #212121; text-decoration: none;"><img src="~/Images/PositiveSSL_tl_trans.png" alt="SSL Certificate" title="SSL Certificate" border="0" /></a>
+                <div style="font-family: arial;font-weight:bold;font-size:15px;color:#86BEE0;"><a href="https://www.positivessl.com" style="color:#86BEE0; text-decoration: none;">SSL Certificate</a></div>
+            </div>
+            <div class="col-12">
+                <p>&copy; @DateTime.Now.Year Copyright - <a href="https://trinbagohotspot.com/"> trinbagohotspot.com </a></p>
+                <p>All rights reserved</p>
+            </div>                       
+        </div>
+    </footer>
+    @Scripts.Render("~/bundles/js")
+    @RenderSection("scripts", required: false)
+    @if (HttpContext.Current.IsDebuggingEnabled)
+    {
+        @MiniProfiler.RenderIncludes()
+    }
+    @RenderSection("bottom", false)
+    <div id="outdated"></div>
+</body>
+</html>
+<script>
+    //event listener: DOM ready
+    function addLoadEvent(func) {
+        var oldonload = window.onload;
+        if (typeof window.onload != 'function') {
+            window.onload = func;
+        } else {
+            window.onload = function () {
+                if (oldonload) {
+                    oldonload();
+                }
+                func();
+            }
+        }
+    }
+    //call plugin function after DOM ready
+    addLoadEvent(function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'IE11',
+            languagePath: '~/Content/outdatedbrowser/lang/en.html'
+        })
+    });
+</script>

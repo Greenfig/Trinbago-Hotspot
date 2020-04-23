@@ -1,0 +1,41 @@
+﻿@model Trinbago_MVC5.Areas.Admin.Models.AdminClassifiedAdEditForm
+@if (Model.AdInfo != null)
+{
+    var NewModel = new Trinbago_MVC5.Models.AdInfoPartial() { AdInfo = Model.AdInfo, SelectListForm = Model.SelectListForm };
+    if (Model.SubCategoryName.Equals("Automotive Parts"))
+    {
+        Html.RenderPartial("~/Areas/ClassifiedAd/Views/Shared/_CreateAdAutomotivePartsAdInfo.cshtml", NewModel);
+    }
+    else if (Model.SubCategoryName.Equals("Cars/Trucks"))
+    {
+        Html.RenderPartial("~/Areas/ClassifiedAd/Views/Shared/_CreateAdCarTruckAdInfo.cshtml", NewModel);
+    }
+    else if (Model.SubCategoryName.Equals("Motorcycles/ATVs"))
+    {
+        Html.RenderPartial("~/Areas/ClassifiedAd/Views/Shared/_CreateAdMotorcycleATVAdInfo.cshtml", NewModel);
+    }
+    else if (Model.SubCategoryName.Equals("Apartments/Condos For Sale") ||
+    Model.SubCategoryName.Equals("Apartments/Condos Rental") ||
+    Model.SubCategoryName.Equals("House For Sale") ||
+    Model.SubCategoryName.Equals("House Rental") ||
+    Model.SubCategoryName.Equals("Commercial Office Space") ||
+    Model.SubCategoryName.Equals("Land For Sale") ||
+    Model.SubCategoryName.Equals("Land Rental/Leasing"))
+    {
+        Html.RenderPartial("~/Areas/ClassifiedAd/Views/Shared/_CreateAdRealEstateAdInfo.cshtml", NewModel);
+    }
+    else if (Model.CategoryName.Equals("Pets"))
+    {
+        Html.RenderPartial("~/Areas/ClassifiedAd/Views/Shared/_CreateAdPetAdInfo.cshtml", NewModel);
+    }
+    else if (Model.CategoryName.Equals("Business Services"))
+    {
+        Html.RenderPartial("~/Areas/ClassifiedAd/Views/Shared/_CreateAdBusinessServicesAdInfo.cshtml", NewModel);
+    }
+    else
+    {
+        Html.RenderPartial("~/Areas/ClassifiedAd/Views/Shared/_CreateAdDefaultAdInfo.cshtml", NewModel);
+    }
+}
+
+

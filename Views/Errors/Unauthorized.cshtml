@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Unauthorized";
+}
+<hr class="topbar" />
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <hgroup class="title container">
+                <h1 class="error">Unauthorized</h1>
+            </hgroup>
+        </div>
+        <div class="card-body">
+            <h2 class="error">You do not have access to the resource you are looking for.</h2>
+            <div class="col-md-12" style="text-align:center;">
+                @Html.ActionLink("Home Page", "Index", "Home", null, new { @class = "btn btn-primary" })
+            </div>
+            <br />
+            <br />
+        </div>
+    </div>
+</div>

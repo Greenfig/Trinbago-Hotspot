@@ -1,0 +1,54 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdApplyToForm
+@using Trinbago_MVC5.Extensions
+
+@using (Html.BeginForm("ApplyToJob", "ClassifiedAd", new { Area = "ClassifiedAd" }, FormMethod.Post, htmlAttributes: new { @class = "form-vertical", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <div class="modal-body alert alert-info">
+        <fieldset>
+            @Html.HiddenFor(model => model.ItemUrl)
+            @Html.HiddenFor(model => model.stringId)
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Message)
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @Html.TextAreaFor(model => model.Message, htmlAttributes: new { @class = "form-control", rows = "4", style = "max-width:100%;" })
+                                @Html.ValidationMessageFor(model => model.Message)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Name)
+                        @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control", placeholder = "Enter your name" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.From)
+                        @Html.TextBoxFor(model => model.From, htmlAttributes: new { @class = "form-control", placeholder = "Enter email" })
+                        @Html.ValidationMessageFor(model => model.From)
+                    </div>
+
+
+                    @Html.LabelFor(model => model.FileUpload)
+                    <span class="text-danger">(Format: PDF/DOC, Max Size: 3MB)</span>
+                    @Html.TextBoxFor(model => model.FileUpload, htmlAttributes: new { type = "file", accept=".pdf,.doc" })
+                    @Html.ValidationMessageFor(model => model.FileUpload)
+                    <br /><br />
+                    @Html.Recaptcha2()
+                    @Html.ValidationMessage("g-recaptcha-response", new { @class = "text-danger" })
+                </div>
+
+            </div>
+        </fieldset>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" value="Submit Application" class="btn btn-primary pull-right" />
+    </div>
+}
+

@@ -1,0 +1,116 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdQueueList>
+<table class="table edit-listings table-striped">
+    <thead>
+        <tr>
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @if (Model.PageCount > 1)
+            {
+                @Html.PagedListPager(Model, pageNumber => Url.Action("AdQueuePagination", "Admin",
+            new
+            {
+                Area = "Admin",
+                pageNumber
+            }),
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions()
+                {
+                    LinkToFirstPageFormat = string.Format("First"),
+                    LinkToPreviousPageFormat = string.Format("<"),
+                    LinkToNextPageFormat = string.Format(">"),
+                    LinkToLastPageFormat = string.Format("Last"),
+                    MaximumPageNumbersToDisplay = 3
+                },
+                    new AjaxOptions()
+                    {
+                        HttpMethod = "GET",
+                        UpdateTargetId = "ajaxAdList"
+                    }
+                ))
+            }
+        </tr>
+        <tr>
+            <th>Title</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var ad in Model)
+        {
+            var days = DateTime.Now.Date.Subtract(ad.TimeStamp.Date).Days;
+            <tr>
+                <td class="main-td">
+
+                    @Html.ActionLink(@ad.Title.ToUpper(), "MyAdPreview", "ClassifiedAdManage", new { Area = "ClassifiedAd", adId = @ad.Id }, null)
+
+                    @if (days == 0)
+                    {
+                        <p>Today</p>
+                    }
+                    else if (days == 1)
+                    {
+                        <p class="text-muted">@days Day old</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">@days Days old</p>
+                    }
+                </td>
+
+                <td>
+                    @if (ad.Status == -2)
+                    {
+                        @Html.ActionLink("Approve", "AdminApproveUserAd", new { Area = "Admin", adId = ad.Id, pageNumber = Model.PageNumber }, htmlAttributes: new { @class = "btn btn-primary btn-sm", style = "margin-top:5px;margin-bottom:5px;" })
+                        if (User.IsInRole("Admin"))
+                        {
+                            @:&nbsp;<span class="hidden-xs">|</span>&nbsp;
+                            @Html.ActionLink("Delete", "AdminRemoveUserAd", new { Area = "Admin", adId = ad.Id, pageNumber = Model.PageNumber }, htmlAttributes: new { @class = "btn btn-danger btn-sm", style = "margin-top:5px;margin-bottom:5px;" })
+                        }
+                    }
+                    else if (ad.Status == 1)
+                    {
+                        @Html.ActionLink("Update(SOLD)", "AdminUpdateUserAd", new { Area = "Admin", adId = ad.Id, pageNumber = Model.PageNumber }, htmlAttributes: new { @class = "btn btn-primary btn-sm", style = "margin-top:5px;margin-bottom:5px;" })
+                    }
+                    else if (ad.Status == 2)
+                    {
+                        @Html.ActionLink("Update(RENTED)", "AdminUpdateUserAd", new { Area = "Admin", adId = ad.Id, pageNumber = Model.PageNumber }, htmlAttributes: new { @class = "btn btn-primary btn-sm", style = "margin-top:5px;margin-bottom:5px;" })
+                    }
+                    else if (ad.Status == 3)
+                    {
+                        @Html.ActionLink("Update(DELETE)", "AdminRemoveUserAd", new { Area = "Admin", adId = ad.Id, pageNumber = Model.PageNumber }, htmlAttributes: new { @class = "btn btn-danger btn-sm", style = "margin-top:5px;margin-bottom:5px;" })
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<hr />
+<div class="col-md-12">
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    @if (Model.PageCount > 1)
+    {
+        @Html.PagedListPager(Model, pageNumber => Url.Action("AdQueuePagination", "Admin",
+            new
+            {
+                Area = "Admin",
+                pageNumber
+            }),
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions()
+                {
+                    LinkToFirstPageFormat = string.Format("First"),
+                    LinkToPreviousPageFormat = string.Format("<"),
+                    LinkToNextPageFormat = string.Format(">"),
+                    LinkToLastPageFormat = string.Format("Last"),
+                    MaximumPageNumbersToDisplay = 3
+                },
+                    new AjaxOptions()
+                    {
+                        HttpMethod = "GET",
+                        UpdateTargetId = "ajaxAdList"
+                    }
+                ))
+    }
+</div>

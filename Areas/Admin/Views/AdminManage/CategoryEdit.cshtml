@@ -1,0 +1,53 @@
+﻿@model Trinbago_MVC5.Models.CategoryList
+
+@{
+    ViewBag.Title = "CategoryEdit";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        @using (Html.BeginForm("CategoryEdit", "Admin", FormMethod.Post, new { @class="col-sm-9"}))
+        {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header"><h1>Edit existing category&nbsp;<small>(@User.Identity.Name)</small></h1></div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+
+                            <div class="row">
+                                <div class="col-sm-7">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    @Html.LabelFor(m => m.Name)
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    @Html.TextBoxFor(m => m.Name, htmlAttributes: new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(m => m.Name)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            <input type="submit" class="btn btn-primary btn-sm pull-right" style="margin-left:5px;" value="Save Changes" />
+                                            @Html.ActionLink("Back to List", "CategoryList", null, htmlAttributes: new { @class = "btn btn-secondary btn-sm pull-right", style = "margin-right:5px;" })
+                                        </p>
+                                    </fieldset>
+
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+}
+    </div>
+    <br>
+</div>

@@ -1,0 +1,124 @@
+﻿@*<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="content-language" content="ll-cc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @ViewBag.MetaDesc
+    @ViewBag.GSV
+    @ViewBag.BSV
+    @ViewBag.NOCHE
+    <title>@ViewBag.Title - Trinbago Hotspot</title>
+    <link href="~/tbhsicon.png" rel="shortcut icon" type="image/svg" style="width:100%;height:auto;" />
+
+    @RenderSection("top", false)
+
+</head>
+<body>
+    @if (!WebSecurity.HasUserId)
+    {
+        @Html.Action("ForceLog", "Account");
+    }
+    <div id="fb-root"></div>
+    <!--Navigation-->
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+
+            <div class="navbar-header" style="height:40px !important;">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="@Url.Action("Index","Home")" class="navbar-brand " style="height:auto;">
+                    <span class="logo">
+                        <strong>Trinbago</strong><span class="handwriting">Hotspot</span><br />
+                    </span>
+                </a>
+
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <!--Collapsed-->
+                <ul id="collapsednavbar" class="nav navbar-nav navbar-right visible-xs">
+                    @if (WebSecurity.HasUserId)
+                    {
+                        <li class="active"><a style="pointer-events:none;cursor:default;">@(User.IsInRole("Banned") ? "YOU ARE BANNED" : "Welcome " + @User.Identity.Name)!</a></li>
+                    }
+                    <li><a href="@Url.Action("Index","Home")">Home</a></li>
+                    @if (!WebSecurity.HasUserId)
+                    {
+                        <li>@Html.ActionLink("Login", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                    }
+                    <li><a href="~/ClassifiedAd/CategorySelectAdList">Listings</a></li>
+                    <li class="dropdown">@Html.Partial("_moreinfo")</li>
+                    @if (WebSecurity.HasUserId)
+                    {
+                        <li class="dropdown">@Html.Partial("_LoginPartial")</li>
+                    }
+                    <li><a href="~/ClassifiedAd/CreateAd" id="postadmobile">Post an ad</a></li>
+                </ul>
+                <!--Regular-->
+                <div id="regularnavbar" class="nav navbar-nav navbar-right hidden-xs">
+                    <div class="row">
+                        <div class="pull-right">
+                            @if (!WebSecurity.HasUserId)
+                            {
+                                @Html.ActionLink("Login", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" }) <span>|</span>
+                                @Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" }) <span>|</span>
+                            }
+                            else
+                            {
+                                <span class='text-muted'>@(User.IsInRole("Banned") ? "YOU ARE BANNED " : "Welcome ")</span><span>@User.Identity.Name!</span>
+                                <span>|</span>
+                            }
+                            <a href="~/ClassifiedAd/CategorySelectAdList">Listings</a> <span>|</span>
+                            <span class="dropdown">@Html.Partial("_moreinfo")</span>
+                            @if (WebSecurity.HasUserId)
+                            {
+                                <span>|</span> <span class="dropdown">@Html.Partial("_LoginPartial")</span>
+                            }
+                            <a href="~/ClassifiedAd/CreateAd" class="btn btn-warning post-ad-btn">Post an ad</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+    <div class="footer">
+        <div class="container">
+            <div class="col-sm-12">
+                <a href="https://www.positivessl.com" style="font-family: arial; font-size: 10px; color: #212121; text-decoration: none;"><img src="~/Images/PositiveSSL_tl_trans.png" alt="SSL Certificate" title="SSL Certificate" border="0" /></a>
+                <div style="font-family: arial;font-weight:bold;font-size:15px;color:#86BEE0;"><a href="https://www.positivessl.com" style="color:#86BEE0; text-decoration: none;">SSL Certificate</a></div>
+            </div>
+            <div class="row">
+
+                <div class="col-sm-4 col-12">
+                    <p><strong>&copy; @DateTime.Now.Year - trinbagohotspot.com</strong></p>
+                    <p>All rights reserved</p>
+                </div>
+
+                <div class="col-sm-8 col-12">
+                    <p class="footer-links">
+                        @Html.ActionLink("Home", "Index", "Home")
+                        @Html.ActionLink("Tips and Guides", "Guides", "Home")
+                        @Html.ActionLink("Terms and Conditions", "Terms", "Home")
+                        @Html.ActionLink("Privacy Policy", "Privacy", "Home")
+                        @Html.ActionLink("About Us", "About", "Home")
+                        @Html.ActionLink("Help/Contact Us", "Contact", "Home")
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/LayoutScriptsFirst")
+    @RenderSection("scripts", false)
+    @RenderSection("cke", false)
+    @RenderSection("bottom", false)
+</body>
+</html>*@

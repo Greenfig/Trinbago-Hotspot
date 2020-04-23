@@ -1,0 +1,70 @@
+﻿@model Trinbago_MVC5.Models.CountryWithDetail
+
+@{ ViewBag.Title = "Region List";}
+
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <div class="col-sm-9">
+            <div class="card" style="min-width: 340px;">
+                <div class="card-header"><h1>Region list&nbsp;<small>(@User.Identity.Name)</small></h1></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table edit-listings table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Country</th>
+                                        <th>Region Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => modelItem.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => modelItem.RegionCount)
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>
+                                @Html.ActionLink("Add Region", "RegionAdd", new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-primary btn-sm" })
+                                @Html.ActionLink("Back to List", "CountryList")
+                            </p>
+                            <table class="table edit-listings table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Regions</th>
+                                        <th>Options</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Regions)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Name)
+                                            </td>
+                                            <td>
+                                                @Html.ActionLink("Edit", "RegionEdit", new { id = item.Id })
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+
+
+
+

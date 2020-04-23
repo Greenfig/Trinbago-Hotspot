@@ -1,0 +1,16 @@
+﻿@model Trinbago_MVC5.Areas.Promotion.Models.PromoteAd
+@{
+    ViewBag.Title = "Promote Ads";
+}
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Ad List-->
+        <div class="col-sm-9" id="myPromoteContainer">
+            @{Html.RenderPartial("_PromoteAdsContainer", Model);}
+        </div>
+        <!--/Ad List-->
+    </div>
+    <br>
+</div>

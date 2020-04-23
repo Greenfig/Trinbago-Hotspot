@@ -1,0 +1,114 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.AdListDetailParent
+@using Trinbago_MVC5.IdentityExtensions
+@using Trinbago_MVC5.Extensions
+
+<div class="col-12 col-sm-12 col-md-4 col-lg-3" style="margin-bottom:10px;">
+    <div class="row">
+        <!---->
+        <div class="col-12 col-sm-6 col-md-12 mb-4">
+            <div class="card">
+                <div class="row" style="margin:inherit;">
+                    <!--PUser Partial-->
+                    @if (Model.Model1.PremiumUser != null)
+                    {
+                    <div class="col-12 center zoom-gallery">
+
+                            @{Html.RenderPartial("_PUserInfo", Model.Model1.PremiumUser);}
+
+                    </div>
+                    }
+                    <div class="col-12 pr-0 pl-0 pb-2">
+                        <div class="card-header" style="font-weight:bold;text-align:center;">Contact Member</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row">
+                            @if (Model.Model1.Category.Name.Contains("Jobs") && Model.Model1.Photos != null && Model.Model1.Photos.Count() > 0)
+                            {
+                                var pho_t = Model.Model1.Photos.FirstOrDefault();
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-12" style="margin-bottom:10px;">
+                                            <div class="job-container">
+                                                <div class="job-img-container">
+                                                    <img class="job-img" src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = Model.Model1.Id, @FileName = pho_t.AdDetails_FileName })" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <!--Phone Number and Name-->
+                            <div class="col-12">
+                                <p style="font-size:small;text-align:center;border-bottom:1px inset gainsboro;padding-bottom:10px;">@Model.Model1.AdContactName.ToUpper()</p>
+                                <div class="col-12 text-center">                               
+                                    <p class="col-12 p-0">
+                                        <a href="tel:@Html.DisplayFor(model => model.Model1.AdContactPhone)">
+                                            <strong>1-(868)-@Html.DisplayFor(model => model.Model1.AdContactPhone)</strong>
+                                        </a>
+                                    </p>
+                                    @if (!string.IsNullOrEmpty(Model.Model1.AdContactPhone2))
+                                    {
+                                    <p class="col-12 p-0">
+                                        <a href="tel:@Html.DisplayFor(model => model.Model1.AdContactPhone2)">
+                                            <strong>1-(868)-@Html.DisplayFor(model => model.Model1.AdContactPhone2)</strong>
+                                        </a>
+                                    </p>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.Model1.AdContactPhone3))
+                                    {
+                                    <p class="col-12 p-0">
+                                        <a href="tel:@Html.DisplayFor(model => model.Model1.AdContactPhone3)">
+                                            <strong>1-(868)-@Html.DisplayFor(model => model.Model1.AdContactPhone3)</strong>
+                                        </a>
+                                    </p>
+                                    }
+                                </div>
+                            </div>
+
+                            @if (!User.Identity.IsAuthenticated && Model.Model1.ContactPrivacy)
+                            {
+                                <div class="col-12" style="text-align:center;">
+                                    @Html.ActionLink("Login to private message", "Login", "Account", new { Area = "Account", @returnUrl = Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString()) }, htmlAttributes: new { @class = "btn btn-info mb-3" })
+                                </div>
+                            }
+                            else if (User.Identity.IsAuthenticated && !User.Identity.IsEmailConfirmed() && Model.Model1.ContactPrivacy)
+                            {
+                                <div class="col-12" style="text-align:center;">
+                                    @Html.ActionLink("Confirm Email", "EmailConfirmNeeded", "Account", new { Area = "Account" }, htmlAttributes: new { @class = "btn btn-info mb-3" })
+                                </div>
+                            }
+                            else
+                            {
+                                if (User.Identity.IsAuthenticated && User.IsInRole("Banned") && Model.Model1.ContactPrivacy)
+                                {
+                                    <div class="col-12" style="text-align:center;">
+                                        <span>Banned users cannot message hidden contacts.</span>
+                                    </div>
+                                }
+                                else if (!Model.Model1.Category.Name.Equals("Jobs"))
+                                {
+                                    <div class="col-12" style="text-align:center;">
+                                        <button data-toggle="modal" data-target="#myModal" class="btn btn-warning btn-sm" style="margin-bottom: 10px; font-weight: bold;" type="button">Reply to ad</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-12" style="text-align:center;">
+                                        <button id="applyto" class="btn btn-warning btn-sm btn-sm" style="margin-bottom: 10px; font-weight: bold;" type="button">Open<br />Application Form</button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Sponsored/Google Ads-->
+        @if (!HttpContext.Current.IsDebuggingEnabled)
+        {
+            <div class="col-12 col-sm-6 col-md-12 mb-2" style="text-align:center;">
+                @Html.GoogleAdSense("g-adsense-addetails_below_contact")
+            </div>
+        }
+    </div>
+</div>

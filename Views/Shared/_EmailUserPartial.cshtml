@@ -1,0 +1,57 @@
+﻿@model Trinbago_MVC5.Controllers.ClassifiedAdQForm
+
+@using (Ajax.BeginForm("EmailUser", null, null, new AjaxOptions { UpdateTargetId = "myModal" }, htmlAttributes: new { @class = "form-vertical" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <div class="modal-body">
+        <fieldset>   
+            @Html.HiddenFor(model => model.ItemUrl)
+            @Html.HiddenFor(model => model.stringId)
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Message)
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @Html.TextAreaFor(model => model.Message, htmlAttributes: new { @class = "form-control", rows = "4" })
+                                @Html.ValidationMessageFor(model => model.Message)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Name)
+                        @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control", placeholder = "Enter your name" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.From)
+                        @Html.TextBoxFor(model => model.From, htmlAttributes: new { @class = "form-control", placeholder = "Enter email" })
+                        @Html.ValidationMessageFor(model => model.From)
+                    </div>
+
+                    <div class="alert alert-info hidden-xs">
+                        <p>
+                            Follow these simple steps for a safe and successful buying experience:<br />
+                            1. Make sure the ad contains adequate information about the item for sale.<br />
+                            2. You should <em>NOT</em> need to contact the seller to detemine what he/she is selling.<br />
+                            3. Meet face to face to see the item and exchange money.<br />
+                            4. Meet in an open, public location.<br />
+                            5. Make sure you are completely happy with the item before handing over any money. <br />
+                            6. Although we do not recommend paying for an item you haven't seen, if you are planning to do this, please use a secure payment method.<br />
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </fieldset>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <input type="submit" value="Submit" class="btn btn-primary pull-right" />
+    </div>
+}

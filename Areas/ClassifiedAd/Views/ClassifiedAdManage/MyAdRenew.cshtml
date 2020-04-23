@@ -1,0 +1,48 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdMyAdRenew
+@{
+    ViewBag.Title = "Renew Ad";
+}
+@{ var ad = Model;}
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-9 col-lg-9 offset-md-2">
+            <div class="card">
+                <div class="card-header">Ad Renewal</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <a id="viewalllink" target="_blank" class="hover col-12 col-sm-12 col-md-7 col-lg-8" href="@Url.Action("ShortAdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", adId = @ad.Id })">
+                                    <div class="row text-center">
+                                        <div class="col-12 col-sm-12 col-md-7 col-lg-4" style="margin-bottom:5px;">
+                                            @if (!string.IsNullOrEmpty(ad.AdPhoto))
+                                            {
+                                                <div class="thumbnail mylist"><img alt="Ad Image" src="~/Images/@ad.StringId.Substring(2, 4)/@ad.StringId.Substring(0, 4)/@ad.AdPhoto" /></div>
+                                            }
+                                            else
+                                            {
+                                                <div class="thumbnail mylist"><img alt="My Ad Image" src="/images/TH/noimage.png"></div>
+                                            }
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-md-8 col-lg-8" style="text-align:center;">
+                                            <span>@ad.Title.ToUpper()</span><br /><br />
+                                            <span class="text-danger">Expires: @ad.ExpiryTimeStamp.ToString("yyyy-MMMM-dd")</span>
+                                        </div>
+                                    </div>
+                                </a>
+                                @using (Html.BeginForm("FinalizeMyAdRenew", "ClassifiedAdManage", new { Area = "ClassifiedAd", adId = ad.Id }, FormMethod.Post, new { @class = "col-12 col-sm-12 col-md-5 col-lg-4", @style = "text-align:center" }))
+                                {
+                                    <button type="submit" class="btn btn-info btn-lg mt-3">Renew Ad Now!</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/Ad List-->
+    </div>
+    <br>
+</div>
+

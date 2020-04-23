@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Trinbago_MVC5.Models.Order_History>
+@{
+    ViewBag.Title = "Order History";
+}
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Ad List-->
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header">Current Promoted Ads</div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @{
+                                        if (Model != null && Model.Count() > 0)
+                                        {
+                                            <table class="table table-striped">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>OrderID</th>
+                                                        <th>Order Description</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                @foreach (var o in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@o.Id</td>
+                                                        <td>@Html.Raw(o.Description)</td>
+                                                        <td>@o.Date</td>
+                                                    </tr>
+                                                }
+                                                </tbody>
+                                            </table>
+                                        }
+                                    }
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--/Ad List-->
+        </div>
+        <br>
+    </div>
+

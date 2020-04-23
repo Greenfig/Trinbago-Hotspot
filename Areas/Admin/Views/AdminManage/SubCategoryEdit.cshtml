@@ -1,0 +1,39 @@
+﻿@model Trinbago_MVC5.Areas.Admin.Models.SubCategoryEditForm
+@using Trinbago_MVC5.IdentityExtensions
+@{
+    ViewBag.Title = "SubCategory Edit";
+}
+
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        @using (Html.BeginForm("SubCategoryEdit", "AdminManage", new { Area = "Admin" }, FormMethod.Post, new { @class = "col-md-9" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header"><h1>Edit existing category&nbsp;<small>(@User.Identity.GetPosterName())</small></h1></div>
+                    <div class="card-body">
+                        @Html.HiddenFor(model => model.StringId)
+                        @Html.HiddenFor(model => model.CategoryId)
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Name)
+                            @Html.TextBoxFor(m => m.Name, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Name)
+
+                        </div>
+                        <p>
+                            <input type="submit" class="btn btn-primary btn-sm pull-right" style="margin-left:5px;" value="Save Changes" />
+                            @Html.ActionLink("Back to List", "CategoryDetails", new { id = Model.CategoryId }, htmlAttributes: new { @class = "btn btn-secondary btn-sm pull-right", style = "margin-right:5px;" })
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <br>
+</div>

@@ -1,0 +1,119 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.AdListDetailParent
+@using Trinbago_MVC5.IdentityExtensions
+
+<!--Title-->
+@{Html.RenderPartial("_AdDetailsTitlePartial", Model);}
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-9 listing-wrapper listings-top listings-bottom" style="margin-top:15px;">
+        <div class="row">
+            <!--Details-->
+            <div id="maindetailbody" class="col-sm-12">
+                @{
+                    HtmlString GMap = null;
+                    var cord = Model.Model1.AdInfo.SingleOrDefault(x => x.Name.Equals("Coordinates"));
+                    if (cord != null && !string.IsNullOrEmpty(cord.Description))
+                    {
+                        var loc = cord.Description.Split(',');
+                        GMap = new HtmlString("<div class=\"row\"><div class='col-7'><a class='venobox btn btn-secondary' style='font-weight:600;height:54px;width:148px;' data-vbtype='iframe' href='https://www.google.com/maps/embed/v1/place?key=AIzaSyBqDqfXXFwChQvgEIrWcGtChwXGbTfuOXM&q=" + loc[0] + "," + loc[1] + "&zoom=16'><img src =\"/Images/icons/google_maps_logo.png\" style=\"width:50px;margin-left:-10px; margin-top:-5px;margin-bottom:-5px;\" alt='google maps icon'>Google Map</img></a></div><div class='col-5'><a class='btn btn-secondary visible-sm visible-xs' style='font-weight:600;height:54px;width:137px;' href='waze://?ll=" + loc[0] + "," + loc[1] + "' target='_blank\'><img src =\"/Images/icons/waze.png\" style=\"width:50px;margin-left:-10px; margin-top:-5px;margin-bottom:-5px;\" alt='waze icon'>Waze App</img></a></div></div><hr style='border:0px;'/>");
+                    }
+                }
+                @GMap
+                <!--Ad Details-->
+                <div class="row">
+                    <h3 class="fancy col-12">
+                        <span id="fancy-span1">Ad details</span>&nbsp;<span id="fancy-span2" class="pull-right">Views: @Model.Model1.AdViewsCount</span>
+                    </h3>
+                    @if (Model.Model1.AdInfo != null)
+                    {
+                        if (Model.Model1.AdInfo.Count > 0)
+                        {
+                            <div class="col-12 col-sm-6">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <th>Job Title</th>
+                                            <td>@Model.Model1.Title</td>
+                                        </tr>
+                                        @foreach (var ai in Model.Model1.AdInfo)
+                                        {
+                                            if (!string.IsNullOrEmpty(ai.Description))
+                                            {
+                                                <tr>
+                                                    <th>@ai.Name</th>
+                                                    <td>@ai.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                    <div class="col-12 col-sm-6">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Ad ID</th>
+                                    <td>#@Model.Model1.Id</td>
+                                </tr>
+                                <tr>
+                                    <th>Ad Type:</th>
+                                    <td>@Model.Model1.AdType</td>
+                                </tr>
+                                <tr>
+                                    <th>Price:</th>
+                                    <td>
+                                        @{
+                                            if (Model.Model1.PriceInfo.Equals("Please Contact"))
+                                            {
+                                                @Model.Model1.PriceInfo
+                                            }
+                                            else if (Model.Model1.PriceInfo.Equals("None"))
+                                            {
+                                                <p>@Model.Model1.Price</p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    @Model.Model1.Price
+                                                    &nbsp;<strong class="highlighted">
+                                                        @Model.Model1.PriceInfo
+                                                    </strong>
+                                                </p>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--More Info-->
+                @if (!string.IsNullOrEmpty(Model.Model1.Description))
+                {
+                <div class="row">
+                    <h3 class="fancy col-12">
+                        <span id="fancy-span1">More Info</span>
+                    </h3>
+                    <div class="col-12" style="-ms-word-wrap: break-word; word-wrap: break-word;line-height:20px;">
+                        @Html.Raw(Model.Model1.Description)
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        <div id="applyarea" class="col-sm-7 col-sm-offset-5" hidden="hidden">
+            <hr />
+            @{Html.RenderPartial("_AdDetailsApplyToForm", Model.Model4);}
+        </div>
+    </div>
+    <!--Contact-->
+    @{Html.RenderPartial("_AdDetailsContactPartial", Model);}
+</div>
+<!--Related Ads-->
+@{Html.RenderPartial("_AdDetailsRelatedAdPartial", Model);}
+<!--Modal Report-->
+<div class="modal fade" id="myModalReport" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    @{Html.RenderPartial("_AdDetailsReportPartial", Model.Model3);}
+</div>
+<!--/Modal Report-->

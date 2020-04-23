@@ -1,0 +1,56 @@
+﻿@model Trinbago_MVC5.Areas.Account.Models.ExternalLoginList
+@using Microsoft.Owin.Security
+
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0)
+    {
+        <div>
+            <p>
+                There are no external authentication services available.
+            </p>
+        </div>
+    }
+    else
+    {
+        using (Html.BeginForm("ExternalLogin", "Account", new { Area = "Account", ReturnUrl = Model.ReturnUrl }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="socialLoginList" class="col-12">
+                <div class="row">
+                    @foreach (AuthenticationDescription p in loginProviders)
+                    {
+                        if (p.Caption.Equals("Facebook"))
+                        {
+                            <div class="col-12 col-sm-4">
+                                <button class="btn btn-sm col-12 mb-1 mt-1" style="background-color: #3b5998;color: white" type="submit" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">
+                                    <img src="~/Images/icons/facebook.png" style="width: 20px;margin-left: -8px;margin-right: 5px;">@p.AuthenticationType
+                                </button>
+                            </div>
+                        }
+                        else if (p.Caption.Equals("Google"))
+                        {
+                            <div class="col-12 col-sm-4">
+                                <button class="btn btn-sm col-12 mb-1 mt-1" style="background-color: #dd4b39;color: white" type="submit" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">
+                                    <img src="~/Images/icons/Google_Plus.png" style="width: 28px;margin-left: -8px;margin-right: 5px;margin-top: -4px;margin-bottom: -4px;">@p.AuthenticationType
+                                </button>
+                            </div>
+                        }
+                        else if (p.Caption.Equals("Twitter"))
+                        {
+                            <div class="col-12 col-sm-4">
+                                <button class="btn btn-sm col-12 mb-1 mt-1" style="background-color: #4099FF;color: white" type="submit" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">
+                                    <img src="~/Images/icons/twittericon-2.png" style="width: 28px;margin-left: -8px;margin-right: 5px;margin-top: -4px;margin-bottom: -4px;">@p.AuthenticationType
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-secondary" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    }
+}

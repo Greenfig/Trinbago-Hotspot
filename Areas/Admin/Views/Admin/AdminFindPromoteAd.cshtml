@@ -1,0 +1,79 @@
+﻿@model  Trinbago_MVC5.Areas.Admin.Models.AdminPromote
+
+@{
+    Layout = null;
+}
+
+@if (Model.Ad != null)
+{
+<div class="card-body">
+    @using (Ajax.BeginForm("AdminPromoteUserAd", "Admin", new { Area = "Admin" }, new AjaxOptions { UpdateTargetId = "ajaxPromo" }))
+    {
+        @Html.HiddenFor(model => model.Ad.Id)
+        var duration = new SelectList(Model.PromoDuration, "Weeks", "Duration");
+        <div class="text-center font-weight-bold">@Html.ActionLink(string.Format("{0} - View Ad Details ", Model.Ad.Id), "ShortAdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", adId = Model.Ad.Id }, new { target = "_blank", style = "color:blue;" })</div>
+        <div style="overflow:auto;">
+            <table class="table-striped" cellpadding="10" style="width:100%;">
+                <thead>
+                    <tr>
+                        <td>Promo Type</td>
+                        <td>Is Active</td>
+                        <td>Duration</td>
+                        <td>Start Date</td>
+                        <td>End Date</td>
+                        <td>Promote Duration</td>
+                        <td>Promote Cost</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Urgent Ad</td>
+                        <td>@Model.Ad.AdPromotion.UrgentAd.Status</td>
+                        <td>@Model.Ad.AdPromotion.UrgentAd.Duration</td>
+                        <td>@Model.Ad.AdPromotion.UrgentAd.StartDate</td>
+                        <td>@Model.Ad.AdPromotion.UrgentAd.EndDate</td>
+                        <td>@Html.DropDownListFor(model => model.Ad.AdPromotion.UrgentAd.Duration, duration, null, new { @onchange = "updatePrice('urgentPay'," + Model.UrgentAdPrice + ", this.value)" })</td>
+                        <td id="urgentPay">@string.Format("{0:C}", (Model.Ad.AdPromotion.UrgentAd.Duration * Model.UrgentAdPrice))</td>
+                    </tr>
+                    <tr>
+                        <td>Top Ad</td>
+                        <td>@Model.Ad.AdPromotion.TopAd.Status</td>
+                        <td>@Model.Ad.AdPromotion.TopAd.Duration</td>
+                        <td>@Model.Ad.AdPromotion.TopAd.StartDate</td>
+                        <td>@Model.Ad.AdPromotion.TopAd.EndDate</td>
+                        <td>@Html.DropDownListFor(model => model.Ad.AdPromotion.TopAd.Duration, duration, null, new { @onchange = "updatePrice('topPay'," + Model.TopAdPrice + ", this.value)" })</td>
+                        <td id="topPay">@string.Format("{0:C}", (Model.Ad.AdPromotion.TopAd.Duration * Model.TopAdPrice))</td>
+                    </tr>
+                    <tr>
+                        <td>Featured Ad</td>
+                        <td>@Model.Ad.AdPromotion.FeaturedAd.Status</td>
+                        <td>@Model.Ad.AdPromotion.FeaturedAd.Duration</td>
+                        <td>@Model.Ad.AdPromotion.FeaturedAd.StartDate</td>
+                        <td>@Model.Ad.AdPromotion.FeaturedAd.EndDate</td>
+                        <td>@Html.DropDownListFor(model => model.Ad.AdPromotion.FeaturedAd.Duration, duration, null, new { @onchange = "updatePrice('featurePay'," + Model.FeaturedAdPrice + ", this.value)" })</td>
+                        <td id="featurePay">@string.Format("{0:C}", (Model.Ad.AdPromotion.FeaturedAd.Duration * Model.FeaturedAdPrice))</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <br />
+        <button class="btn btn-primary no-border-radius col-12 col-sm-4 col-md-3" type="submit" value="Submit" style="height:35px;">Update Promotion</button>
+    }
+    @using (Ajax.BeginForm("AdminDemoteAd", "Admin", new { Area = "Admin", @adId = Model.Ad.Id }, new AjaxOptions { UpdateTargetId = "ajaxPromo" }))
+    {
+        <br />
+        <br />
+        <button class="btn btn-outline-warning no-border-radius col-12 col-sm-4 col-md-3" type="submit" value="Submit" style="height:35px;">Remove Promotion</button>
+    }
+</div>
+<script>
+    function updatePrice(priceId, basePrice, duration) {
+        $("#" + priceId).html("$" + (basePrice * parseInt(duration)).toString() + ".00")
+    }
+</script>
+}
+else
+{
+    <div class="card-body">Ad not found.</div>
+}

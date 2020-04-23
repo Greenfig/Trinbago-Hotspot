@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdList>
+<!--Ad List-->
+@foreach (var ad in Model)
+{
+    <a id="viewalllink" class="hover" href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", @category = ad.SeoCategory, @location = ad.SeoLocation, @Id = ad.Id, @title = ad.SeoTitle })">
+
+    <div class="row popular-listings">
+    
+    @if (ad.UrgentAdStatus)
+    {
+        <div class="ribbon-wrapper-base"><div class="ribbon-urgent">&nbsp;<span>Urgent</span></div></div>
+    }
+
+    <div class="col-12 col-sm-4 col-md-12 col-lg-3" style="margin-bottom:5px;">
+        <div class="thumbnail list"><img alt="@ad.SubCategoryName Image" src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = ad.Id, @FileName = ad.AdList_FileName })"></div>
+    </div>
+    
+    <div class="col-12 col-sm-8 col-md-12 col-lg-9">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="display:block;overflow-wrap:break-word;font-size:medium;">
+            <span class="pull-right col-12 col-sm-4 col-md-3 p-0" style="margin-bottom:5px;font-weight:bold;font-size:15px;">@ad.Price</span>
+            <h2 class="clean col-12 col-sm-8 col-md-9" style="margin-bottom:5px;color:#0b5fa9;padding-left:0;">@ad.Title</h2>
+        </div>
+        @{var days = @DateTime.Now.Date.Subtract(@ad.TimeStamp.Date).Days;}
+        @if (days == 0)
+        {
+            <p class="muted">Posted today</p>
+        }
+        else if (days == 1)
+        {
+            <p class="muted">Posted @days day ago</p>
+        }
+        else
+        {
+            <p class="muted">Posted @days days ago</p>
+        }
+        <p class="muted">@ad.CategoryName</p>
+        <p id="rawdesc">@ad.HtmlFreeDescription</p>
+        
+        <div class="row">
+            <div class="col-9 col-sm-9 col-md-9 col-lg-9">
+                <p class="clean" style="padding:4px 0 2px 0;color:#7a7a7a">@ad.SubCategoryName | @ad.CategoryName</p>
+            </div>
+        </div>
+        <br />
+    </div>
+    </div>
+</a>
+}
+<!--/Ad List-->

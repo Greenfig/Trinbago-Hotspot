@@ -1,0 +1,83 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.AdListDetailParent
+@using Trinbago_MVC5.Extensions
+<div class="row">
+    <div id="mobileAdBar" class="col-12 d-lg-none">
+        <div class="row">
+            <div class="col-6 mt-2 mb-2">
+                @Html.ActionLink("View More", "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = Model?.Model1?.Category?.Id, @subCatId = Model?.Model1?.SubCategory?.Id }, new { @class = "btn btn-sm btn-outline-primary col-12" })
+            </div>
+            <div class="col-6 mt-2 mb-2">
+                @Html.ActionLink("Post Ad", "CreateAd", "ClassifiedAdManage", new { Area = "ClassifiedAd", @subCatId = string.Empty }, new { @class = "btn btn-sm btn-outline-postad col-12" })
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mb-2 mt-2">
+        <ol id="adDetailsBreadcrumb" class="breadcrumb d-none d-lg-flex m-0">
+            <li class="breadcrumb-item"><a href="@ViewBag.PrevPage" class="link-info" style="cursor: pointer;"><i class="fa fa-chevron-left"></i> Back to previous page</a></li>
+            <li class="breadcrumb-item">@Html.ActionLink("All Categories", "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = string.Empty, @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = string.Empty, @subCatId = string.Empty }, null)</li>
+            <li class="breadcrumb-item">@Html.ActionLink(Model.Model1.Category.Name, "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = Model.Model1.Category.SeoName, @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = Model.Model1.Category.Id, @subCatId = string.Empty }, null)</li>
+            <li class="breadcrumb-item">@Html.ActionLink(Model.Model1.SubCategory.Name, "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = Model.Model1.SubCategory.SeoName, @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = Model.Model1.Category.Id, @subCatId = Model.Model1.SubCategory.Id }, null)</li>
+        </ol>
+    </div>
+    <!--Google AdSense (AdDetails_Title)-->
+    @if (!HttpContext.Current.IsDebuggingEnabled)
+    {
+        <div class="col-12" style="text-align:center;">
+            @Html.GoogleAdSense("g-adsense-addetails_above_title")
+        </div>
+    }
+</div>
+<div class="row">
+    <div class="col-sm-7">
+        <h1 style="line-height:30px;">@Model.Model1.Title</h1>
+        <p>Location: @Model.Model1.Country.Name , @Model.Model1.Region.Name</p>
+    </div>
+    <div class="col-sm-5">
+        <p class="price float-sm-right" style="margin-top:10px;line-height:30px;">@Model.Model1.Price</p>
+    </div>
+</div>
+
+<div class="col-sm-12 row no-margin p-0">
+    <!--Social Plugins-->
+    @{var url = '"' + HttpUtility.UrlEncode(HttpContext.Current.Request.Url.AbsoluteUri) + '"';}
+    <div class="col-8 col-sm-8 col-md-8 p-0">
+        <div class="footer-social-icons">
+            <ul class="social-icons">
+                <li>
+                    <button class="social-icon" type="button" style="background-color:transparent; border-color:transparent; padding:0;" onclick="googleShare(@url)">
+                        <i class="fa fa-google-plus"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="social-icon" type="button" style="background-color:transparent; border-color:transparent; padding:0;" onclick="twitterShare(@url)">
+                        <i class="fa fa-twitter"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="social-icon" type="button" style="background-color:transparent; border-color:transparent; padding:0;" onclick="facebookShare(@url)">
+                        <i class="fa fa-facebook"></i>
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="social-icon" style="border:1px solid gainsboro;background-color:transparent;padding:0;" onclick="adDetailsFavourite(@Model.Model1.Id)">
+                        <i id="ad-favourited" class="@(Model.Model1.IsFavourited ? "fa fa-star active" : "fa fa-star")"></i>
+                    </button>
+                </li>
+                @if (Model.Model1.IsOwner)
+                {
+                <li>
+                    <a class="social-icon" style="background-color:transparent; border-color:transparent; padding:0;" href="@Url.Action("MyAdEdit", "ClassifiedAdManage", new { Area = "ClassifiedAd", adId = Model.Model1.Id })">
+                        <i class="fa fa-pencil">&nbsp;Quick Edit</i>
+                    </a>
+                </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <!--/Social Plugins-->
+    <div class="col-4 col-sm-4 col-md-4 p-0" style="text-align: right;top:19px;">
+        <a class="fa fa-exclamation-triangle" id="reportmod" data-toggle="modal" data-target="#myModalReport" style="color:rgb(205, 138, 50);cursor:pointer;">
+            Report Ad
+        </a>
+    </div>
+</div>

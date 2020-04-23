@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdList>
+
+<div style="margin-bottom:10px;">
+        @foreach (var ad in Model)
+        {
+        <div id="viewalllink" class="hover" data-url-href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", @category = ad.SeoCategory, @location = ad.SeoLocation, @Id = ad.Id, @title = ad.SeoTitle })">
+            <div class="row premium listing-row">
+                @{
+                    if (ad.UrgentAdStatus)
+                    {
+                        <div class="ribbon-wrapper-urgent-featured"><div class="ribbon-urgent-featured">&nbsp;<span>Urgent Featured</span></div></div>
+                    }
+                    else
+                    {
+                        <div class="ribbon-wrapper-base"><div class="ribbon-featured">&nbsp;<span>Featured</span></div></div>
+                    }
+                    if (ad.AdPhoto)
+                    {
+                        <div class="col-5 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:5px;">
+                            <div id="favourite" class="@(ad.IsFavourited ? "favourite active" : "favourite")" data-fav-id="@ad.Id"></div>
+                            <div class="thumbnail list"><img title="@(ad.ModelName ?? ad.SubCategoryName) Image" alt="@(ad.ModelName ?? ad.SubCategoryName) Image" src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = ad.Id, @FileName = ad.AdList_FileName })"></div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-5 col-sm-4 col-md-3 col-lg-3" style="margin-bottom:5px;">
+                            <div id="favourite" class="@(ad.IsFavourited ? "favourite active" : "favourite")" data-fav-id="@ad.Id"></div>
+                            <div class="thumbnail list"><img title="@(ad.ModelName ?? ad.SubCategoryName) Image" alt="@(ad.ModelName ?? ad.SubCategoryName) Image" src="/images/TH/noimage.png"></div>
+                        </div>
+                    }
+                }
+                <div class="col-7 col-sm-8 col-md-9 col-lg-9" style="height:145px;">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="display:block;overflow-wrap:break-word;font-size:medium;">
+                        <span class="pull-right col-12 col-sm-4 col-md-3 p-0" style="margin-bottom:5px;font-weight:bold;font-size:15px;">@ad.Price</span>
+                        <h2 class="clean col-12 col-sm-8 col-md-9" style="margin-bottom:5px;color:#0b5fa9;padding-left:0;"><a href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", @category = ad.SeoCategory, @location = ad.SeoLocation, @Id = ad.Id, @title = ad.SeoTitle })">@(ad.Status == 1 ? new HtmlString("<span class='glow'>[SOLD] </span>" + "<span style='text-decoration: line-through;'>" + @ad.Title + "</span>") : ad.Status == 2 ? new HtmlString("<span class='glow'>[RENTED] </span>" + "<span style='text-decoration: line-through;'>" + @ad.Title + "</span>") : new HtmlString("<span>" + @ad.Title + "</span>"))</a></h2>
+                    </div>
+                    @{var days = @DateTime.Now.Date.Subtract(@ad.TimeStamp.Date).Days;}
+                    @{
+                        if (days == 0)
+                        {
+                            <p class="muted col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="margin-top:5px;margin-bottom:5px;font-size:12px;">Posted today</p>
+                        }
+                        else if (days == 1)
+                        {
+                            <p class="muted col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="margin-top:5px;margin-bottom:5px;font-size:12px;">Posted @days day ago</p>
+                        }
+                        else
+                        {
+                            <p class="muted col-12 col-sm-12 col-md-12 col-lg-12 p-0" style="margin-top:5px;margin-bottom:5px;font-size:12px;">Posted @days days ago</p>
+                        }
+                    }
+                    @{
+                        <p class="muted" style="margin-bottom:5px;">@ad.CategoryName</p>
+                        //--------------------------------
+                        <p id="rawdesc" class="d-none d-sm-block">@ad.HtmlFreeDescription</p>
+                    }
+                    <div class="row">
+                        <div class="col-12" style="position:absolute;bottom:0;">
+                            <p class="clean" style="position:relative;padding:4px 0 2px 0;color:#7a7a7a;font-size:11px;">@ad.SubCategoryName</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+</div>

@@ -1,0 +1,459 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.AdlistPage
+@using Trinbago_MVC5.Managers
+<div class="col-12 col-lg-4 p-0">
+    <div id="refineSearch" class="sidebar sidebar-hide">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card mb-2">
+                <div class="card-header">Refine Search</div>
+                <div class="card-body p-0">
+                    <ul>
+                        @if (Model.Category == null)
+                        {
+                            @:<li class="mb-2 mt-2">
+                                @Html.ActionLink("All Categories", "AdList", "ClassifiedAd", new { @category = string.Empty, @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = string.Empty, @subCatId = string.Empty }, new { @class = "refine-li", style = "background-color:gainsboro;" })
+                            }
+                            else
+                            {
+                                @:<li class="mb-2 mt-2">
+                                @Html.ActionLink("All Categories", "AdList", "ClassifiedAd", new { @category = string.Empty, @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = string.Empty, @subCatId = string.Empty }, new { @class = "refine-li" })
+                            }
+                        <ul>
+                            @if (Model.Category != null)
+                            {
+                                if (Model.Category.SubCategories != null)
+                                {
+                                    if (Model.SubCategory == null)
+                                    {
+                                        @:<li class="mb-2 mt-2">
+                                            @Html.ActionLink(Model.Category.Name, "AdList", "ClasifiedAd", new { @category = @Model.Category.SeoName, @location = ViewBag.SeoLocation, @CountryId = Model.CountryId, @RegionId = Model.RegionId, @catId = @Model.Category.Id }, new { @class = "refine-li", style = "background-color:gainsboro;" })
+                                        }
+                                        else
+                                        {
+                                            @:<li class="mb-2 mt-2">
+                                            @Html.ActionLink(Model.Category.Name, "AdList", "ClassifiedAd", new { @category = @Model.Category.SeoName, @location = ViewBag.SeoLocation, @CountryId = Model.CountryId, @RegionId = Model.RegionId, @catId = @Model.Category.Id }, new { @class = "refine-li" })
+                                        }
+                                        <ul style="line-height:20px;max-height:300px;overflow-y:auto;">
+                                            @foreach (var sc in Model.Category.SubCategories)
+                                            {
+                                                if (Model.SubCategory != null)
+                                                {
+                                                    if (Model.SubCategory.Name.Equals(sc.Name))
+                                                    {
+                                                        @:<li class="mb-2 mt-2">
+                                                            @Html.ActionLink(string.Format("{0} ({1})", sc.Name, sc.ClassifiedAdsCount), "AdList", "ClassifiedAd", new { @category = @sc.SeoName, @location = ViewBag.SeoLocation, @CountryId = Model.CountryId, @RegionId = Model.RegionId, @catId = Model.Category.Id, @subCatId = @sc.Id }, new { @class = "refine-li", style = "background-color:gainsboro;display:inline-block;" })
+                                                            @:</li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li class="mb-2 mt-2">@Html.ActionLink(string.Format("{0} ({1})", sc.Name, sc.ClassifiedAdsCount), "AdList", "ClassifiedAd", new { @category = @sc.SeoName, @location = ViewBag.SeoLocation, @CountryId = Model.CountryId, @RegionId = Model.RegionId, @catId = Model.Category.Id, @subCatId = @sc.Id }, new { @class = "refine-li" })</li>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <li class="mb-2 mt-2">@Html.ActionLink(string.Format("{0} ({1})", sc.Name, sc.ClassifiedAdsCount), "AdList", "ClassifiedAd", new { @category = sc.SeoName, @location = ViewBag.SeoLocation, @CountryId = Model.CountryId, @RegionId = Model.RegionId, @catId = Model.Category.Id, @subCatId = sc.Id }, new { @class = "refine-li" })</li>
+                                                }
+                                            }
+                                        </ul>
+                                        @:</li>
+                                }
+                            }
+                            else
+                            {
+                                foreach (var cat in Model.Categories)
+                                {
+                                    <li class="mb-2 mt-2">@Html.ActionLink(string.Format("{0} ({1})", cat.Name, cat.TotalClassifiedAdsCount), "AdList", "ClassifiedAd", new { @category = @cat.SeoName, @location = ViewBag.SeoLocation, @CountryId = Model.CountryId, @RegionId = Model.RegionId, @catId = @cat.Id }, new { @class = "refine-li" })</li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                </ul>
+
+                    <!--Location-->
+                    @{ 
+                        var countries = Model.CountryAdList;
+                        var country = countries.FirstOrDefault(x => x.Id == Model.CountryId);
+                        var region = country?.Regions;
+                        var category = Model.SubCategory != null ? Model.SubCategory.SeoName : Model.Category != null ? Model.Category.SeoName : "classified-ads";
+                    }
+                    <div class="card-header no-border">Location</div>
+                    <ul>
+                    @if(Model.CountryId == 0)
+                    {
+                        @:<li class="mb-2 mt-2">@Html.ActionLink("Trinidad and Tobago", "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = category, @location = "trinidad-tobago", @CountryId = 0, @RegionId = 0, @catId = @Model?.Category?.Id, @subCatId = Model?.SubCategory?.Id }, new { @class = "refine-li", style = "background-color:gainsboro;" })
+                    }
+                    else
+                    {
+                        @:<li class="mb-2 mt-2">@Html.ActionLink("Trinidad and Tobago", "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = category, @location = "trinidad-tobago", @CountryId = 0, @RegionId = 0, @catId = @Model?.Category?.Id, @subCatId = Model?.SubCategory?.Id }, new { @class = "refine-li" })
+                    }
+                    <ul>
+                        @if (Model.CountryId > 0)
+                        {
+                            if (Model.CountryId > 0 && Model.RegionId == 0)
+                            {
+                                @:<li class="mb-2 mt-2">
+                                @Html.ActionLink(country.Name, "AdList", "ClasifiedAd", new { Area = "ClassifiedAd", @category = category, @location = country.SeoName, @CountryId = country.Id, @RegionId = 0, @catId = @Model?.Category?.Id, @subCatId = Model?.SubCategory?.Id }, new { @class = "refine-li", style = "background-color:gainsboro;" })
+                            }
+                            else
+                            {
+                                @:<li class="mb-2 mt-2"><a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = category, @location = country.SeoName, @CountryId = country.Id, @RegionId = 0, @catId = @Model?.Category?.Id, @subCatId = Model?.SubCategory?.Id })" class="refine-li">@country.Name</a>                                
+                            }
+                            if (region != null)
+                            {
+                            <ul style="line-height:20px;max-height:200px;overflow-y:auto;">
+                                
+                                @foreach (var r in region)
+                                {
+                                    <li class="mb-2 mt-2">
+                                        @if(r.Id == Model.RegionId)
+                                        {
+                                            @Html.ActionLink(r.Name, "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = category, @location = r.SeoName, @CountryId = country.Id, @RegionId = r.Id, @catId = @Model?.Category?.Id, @subCatId = Model?.SubCategory?.Id }, new { @class = "refine-li", style = "background-color:gainsboro;display:inline-block;" })
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink(r.Name, "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = category, @location = r.SeoName, @CountryId = country.Id, @RegionId = r.Id, @catId = @Model?.Category?.Id, @subCatId = Model?.SubCategory?.Id }, new { @class = "refine-li" })
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                            @:</li>      
+                            }
+                        }
+                        else
+                        {
+                            foreach(var c in countries)
+                            {
+                                @:<li class="mb-2 mt-2">@Html.ActionLink(c.Name, "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = category, @location = c.SeoName, @CountryId = c.Id, @RegionId = 0, @catId = @Model?.Category?.Id, @subCatId = Model?.SubCategory?.Id }, new { @class = "refine-li" })</li>
+                            }
+                        }
+                    </ul>
+                </ul>
+
+                    <!--Filter-->
+                    @{
+                        var MakeList = Model.SelectLists.SingleOrDefault(x => x.Name == "MakeList");
+                        var BodyTypeList = Model.SelectLists.SingleOrDefault(x => x.Name == "BodyTypeList");
+                        var DrivetrainList = Model.SelectLists.SingleOrDefault(x => x.Name == "DrivetrainList");
+                        var TransmissionList = Model.SelectLists.SingleOrDefault(x => x.Name == "TransmissionList");
+                        var ConditionList = Model.SelectLists.SingleOrDefault(x => x.Name == "ConditionList");
+                        var BedroomList = Model.SelectLists.SingleOrDefault(x => x.Name == "BedroomList");
+                        var BathroomList = Model.SelectLists.SingleOrDefault(x => x.Name == "BathroomList");
+                        var FurnishedList = Model.SelectLists.SingleOrDefault(x => x.Name == "FurnishedList");
+                        var SpeciesList = Model.SelectLists.SingleOrDefault(x => x.Name == "SpeciesList");
+                        var atlist = Model.SelectLists.SingleOrDefault(x => x.Name.Equals("AdType"));
+                        var RentalType = Model.SelectLists.SingleOrDefault(x => x.Name.Equals("RentalType"));
+                    }
+                    
+                    @if(Model.SubCategory != null  && (Model.SubCategory.Name.Equals("Apartments/Condos Rental") || Model.SubCategory.Name.Equals("House Rental") || Model.SubCategory.Name.Equals("Land Rental/Leasing")))
+                    {
+                    <div class="card-header no-border">Rental Type</div>
+                    <ul>
+                        <li class="mb-2 mt-2">
+                            <a class="refine-li" style="@(ViewBag.Filter_modelRentalType == null ? "background-color:gainsboro;display:inline-block;" : null) col-12" href="@Url.RouteUrl("DefaultAdList", new
+                            {
+                                @category = ViewBag.SeoCurrentCategory,
+                                @location = ViewBag.SeoLocation,
+                                @CountryId = ViewBag.CountryId,
+                                @RegionId = ViewBag.RegionId,
+                                @catId = @Model?.Category?.Id,
+                                @subCatId = Model?.SubCategory?.Id
+                            })">All Types
+                            </a>
+                            <ul>
+                            @foreach (var rtt in RentalType.List)
+                            {
+                            var rtt_text = new SeoManager().GetSeoTitle(rtt.Text);
+                            <li class="mb-2 mt-2">
+                                <a class="refine-li" style="@(ViewBag.Filter_modelRentalType == rtt_text ? "background-color:gainsboro;display:inline-block;" : null) col-12" href="@Url.Action("AdList", "ClassifiedAd", new
+                                    {
+                                        Area = "ClassifiedAd",
+                                        @category = ViewBag.SeoCurrentCategory,
+                                        @location = ViewBag.SeoLocation,
+                                        @CountryId = ViewBag.CountryId,
+                                        @RegionId = ViewBag.RegionId,
+                                        @catId = @Model?.Category?.Id,
+                                        @subCatId = Model?.SubCategory?.Id,
+                                        @modelRentalType = rtt_text
+                                    })">@rtt.Text
+                                </a>
+                            </li>
+                            }
+                            </ul>
+                        </li>
+                    </ul>
+                    }
+                    
+
+                    @if (Model.SubCategory != null && Model.SubCategory.Name.Equals("Cars/Trucks"))
+                    {
+                        
+                    <div class="card-header no-border">Body Type</div>
+                    <ul>
+                        <li class="mb-2 mt-2">
+                            <a class="refine-li" style="@(ViewBag.Filter_modelBodyType == null ? "background-color:gainsboro;display:inline-block;" : null) col-12" href="@Url.RouteUrl("DefaultAdList", new
+                                    {
+                                        @category = "vehicles-cars-trucks",
+                                        @location = ViewBag.SeoLocation,
+                                        @CountryId = ViewBag.CountryId,
+                                        @RegionId = ViewBag.RegionId,
+                                        @catId = @Model?.Category?.Id,
+                                        @subCatId = Model?.SubCategory?.Id
+                                    })">All Body Types
+                                </a>
+                            <ul>
+                            @foreach (var mbt in BodyTypeList.List)
+                            {
+                            var mbt_text = new SeoManager().GetSeoTitle(mbt.Text.Replace("(2 door)", ""));
+                            <li class="mb-2 mt-2">
+                                <a class="refine-li" style="@(ViewBag.Filter_modelBodyType == mbt_text ? "background-color:gainsboro;display:inline-block;" : null) col-12" href="@Url.Action("AdList", "ClassifiedAd", new
+                                    {
+                                        Area = "ClassifiedAd",
+                                        @category = "vehicles-cars-trucks",
+                                        @location = ViewBag.SeoLocation,
+                                        @CountryId = ViewBag.CountryId,
+                                        @RegionId = ViewBag.RegionId,
+                                        @catId = @Model?.Category?.Id,
+                                        @subCatId = Model?.SubCategory?.Id,
+                                        @modelBodyType = mbt_text
+                                    })">@mbt.Text
+                                </a>
+                            </li>
+                            }
+                            </ul>
+                        </li>
+                    </ul>
+                    }
+                    
+                    <div class="card-header no-border">Filter</div>
+                    
+                    @using (Html.BeginForm("AdList", "ClassifiedAd", FormMethod.Get, new { @id = "filterForm", style = "margin-bottom:0px;padding:15px;" }))
+                    {
+                        <div class="form-horizontal">
+                            <div class="row">
+                            @if (Model.SubCategory != null)
+                            {
+                                if (Model.SubCategory.Name.Equals("Cars/Trucks") || Model.SubCategory.Name.Equals("Motorcycles/ATVs") || Model.SubCategory.Name.Equals("Automotive Parts"))
+                                {
+                                    <div class="form-group col-12 col-sm-6">
+                                        <label>Make</label>
+                                        @Html.DropDownList("modelMake", MakeList.List, new
+                                        {
+                                            id = "makeIdList",
+                                            @class = "selectpicker form-control",
+                                            data_live_search = "true",
+                                            title = "-Select a Make-",
+                                            value = @"ViewBag['Filter_modelMake']"
+                                        })
+                                    </div>
+
+                                    <div class="form-group col-12 col-sm-6">
+                                        <label>Model</label>
+                                        <input type="text" class="form-control price-input filter-input" placeholder="model name" value="@(!string.IsNullOrEmpty(ViewBag.Filter_modelName) ? ViewBag.Filter_modelName : null)" name="modelName" />
+                                    </div>
+                                    if (Model.SubCategory.Name.Equals("Cars/Trucks") || Model.SubCategory.Name.Equals("Motorcycles/ATVs"))
+                                    {
+                                        <div class="form-group col-12">
+                                            <label>Mileage range</label>
+                                            <div class="row">
+                                                <div class="input-group col-6">
+                                                    <input type="text" class="form-control price-input" data-val="true" data-val-regex="Invalid format. Example (12345)" data-val-regex-pattern="^([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*|([1-9]{1}[0-9]*))$" placeholder="min mileage" value="@(!string.IsNullOrEmpty(ViewBag.Filter_minMile) ? ViewBag.Filter_minMile : null)" name="minMile" />
+                                                    <div class="input-group-append"><span class="input-group-text">km</span></div>
+                                                </div>
+                                                @Html.ValidationMessage("minMile", htmlAttributes: new { @class = "text-danger" }) 
+                                                <div class="input-group col-6">
+                                                    <input type="text" class="form-control price-input" data-val="true" data-val-regex="Invalid format. Example (12345)" data-val-regex-pattern="^([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*|([1-9]{1}[0-9]*))$" placeholder="max mileage" value="@(!string.IsNullOrEmpty(ViewBag.Filter_maxMile) ? ViewBag.Filter_maxMile : null)" name="maxMile" />
+                                                    <div class="input-group-append"><span class="input-group-text">km</span></div>
+                                                </div>
+                                                @Html.ValidationMessage("maxMile", htmlAttributes: new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="form-group col-12">
+                                        <label>Year range</label>
+                                        <div class="row">
+                                            <div class="col-6 col-sm-6">
+                                                <input type="text" class="form-control price-input filter-input" data-val="true" data-val-regex="Invalid format. Example (1900)" data-val-regex-pattern="^([1-2]{1}[0-9]{3})$" placeholder="min year" value="@(!string.IsNullOrEmpty(ViewBag.Filter_minYear) ? ViewBag.Filter_minYear : null)" name="minYear" />
+                                                @Html.ValidationMessage("minYear", htmlAttributes: new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-6 col-sm-6">
+                                                <input type="text" class="form-control price-input filter-input" data-val="true" data-val-regex="Invalid format. Example (1900)" data-val-regex-pattern="^([1-2]{1}[0-9]{3})$" placeholder="max year" value="@(!string.IsNullOrEmpty(ViewBag.Filter_maxYear) ? ViewBag.Filter_maxYear : null)" name="maxYear" />
+                                                @Html.ValidationMessage("maxYear", htmlAttributes: new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    if (Model.SubCategory.Name.Equals("Cars/Trucks") || Model.SubCategory.Name.Equals("Motorcycles/ATVs"))
+                                    {
+                                        <div class="form-group col-12 col-sm-6">
+                                            <label>Engine Size</label>
+                                                <input type="text" class="form-control price-input filter-input" data-val="true" data-val-regex="Invalid format. Example (1500cc or 1.5L or V6)" data-val-regex-pattern="^([0-9]{1}\.[0-9]{1}\s?[L])$|^([1-9]{1}[0-9]{1}\s?[L])$|^([1-9]{1}[0-9]{1,4}\s?[c][c])$|^(([V]|[v])([6]|[8]|[1][2]))$" placeholder="1500cc or 1.5L or V6" value="@(!string.IsNullOrEmpty(ViewBag.Filter_modEngineSize) ? ViewBag.Filter_modEngineSize : null)" name="modEngineSize" />
+                                                @Html.ValidationMessage("modEngineSize", htmlAttributes: new { @class = "text-danger" })                                            
+                                        </div>
+                                    }
+
+                                    if (Model.SubCategory.Name.Equals("Cars/Trucks"))
+                                    {
+                                        <div class="form-group col-12 col-sm-6">
+                                            <label>Drivetrain</label>
+                                            @Html.DropDownList("modelDrivetrain", DrivetrainList.List, "-Drivetrain-", new
+                                            {
+                                                @class = "form-control"
+                                            })
+                                        </div>
+
+                                        <div class="form-group col-12 col-sm-6">
+                                            <label>Transmission</label>
+                                            @Html.DropDownList("modelTransmission", TransmissionList.List, "-Transmission-", new
+                                            {
+                                                @class = "form-control"
+                                            })
+                                        </div>
+                                    }
+                                    <div class="form-group col-12 col-sm-6">
+                                        <label>Condition</label>
+                                        @Html.DropDownList("modelCondition", ConditionList.List, "-Condition-", new
+                                        {
+                                            @class = "form-control"
+                                        })
+                                    </div>
+                                    if (Model.SubCategory.Name.Equals("Cars/Trucks") || Model.SubCategory.Name.Equals("Motorcycles/ATVs"))
+                                    {
+                                        <div class="form-group col-12 col-sm-6">
+                                            <label>Colour</label>
+                                            <input type="text" class="form-control price-input filter-input" placeholder="colour" value="@(!string.IsNullOrEmpty(ViewBag.Filter_modelColour) ? ViewBag.Filter_modelColour : null)" name="modelColour" />
+                                        </div>
+                                    }
+                                    <hr />
+                                }
+                                else if (Model.SubCategory.CategoryName.Equals("Real Estate"))
+                                {
+                                    if (Model.SubCategory.Name.Contains("Apartments/Condos") || Model.SubCategory.Name.Contains("House"))
+                                    {
+                                        <div class="form-group col-12 col-sm-6">
+                                            <label>Bedrooms</label>
+                                            @Html.DropDownList("modelBedrooms", BedroomList.List, "-Bedroom #-", new
+                                            {
+                                                @class = "form-control"
+                                            })
+                                        </div>
+                                        <div class="form-group col-12 col-sm-6">
+                                            <label>Bathrooms</label>
+                                            @Html.DropDownList("modelBathrooms", BathroomList.List, "-Bathroom #-", new
+                                            {
+                                                @class = "form-control"
+                                            })
+                                        </div>
+                                    }
+                                    if (Model.SubCategory.Name.Contains("Apartments/Condos") || Model.SubCategory.Name.Contains("House") || Model.SubCategory.Name.Contains("Commercial"))
+                                    {
+                                        <div class="form-group col-12 col-sm-6">
+                                            <label>Furnished</label>
+                                            @Html.DropDownList("modelFurnished", FurnishedList.List, "-Select-", new
+                                            {
+                                                @class = "form-control"
+                                            })
+                                        </div>
+                                    }
+                                    if(Model.SubCategory.Name.Contains("Apartments/Condos") || Model.SubCategory.Name.Contains("House") || Model.SubCategory.Name.Contains("Commercial") || Model.SubCategory.Name.Contains("Land"))
+                                    {  <div class="form-group col-12">
+                                            <label>Size</label>
+                                            <div class="row">
+                                                <div class="col-6 col-sm-6">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control price-input" data-val="true" data-val-regex="Invalid format. Example (12345)" data-val-regex-pattern="^([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*|([1-9]{1}[0-9]*))$" placeholder="min" value="@(!string.IsNullOrEmpty(ViewBag.Filter_minSize) ? ViewBag.Filter_minSize : null)" n name="minSize" />
+                                                        <div class="input-group-append"><span class="input-group-text">sq ft</span></div>
+                                                    </div>
+                                                    @Html.ValidationMessage("minSize", htmlAttributes: new { @class = "text-danger" })
+                                                </div>
+                                                <div class="col-6 col-sm-6">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control price-input" data-val="true" data-val-regex="Invalid format. Example (12345)" data-val-regex-pattern="^([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*|([1-9]{1}[0-9]*))$" placeholder="max" value="@(!string.IsNullOrEmpty(ViewBag.Filter_maxSize) ? ViewBag.Filter_maxSize : null)" n name="maxSize" />
+                                                        <div class="input-group-append"><span class="input-group-text">sq ft</span></div>
+                                                    </div>
+                                                    @Html.ValidationMessage("maxSize", htmlAttributes: new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else if (Model.SubCategory.Name.Contains("Pet Hub") ||
+                                Model.SubCategory.Name.Contains("Pet Accessories") || Model.SubCategory.Name.Contains("Pet Adoption") ||
+                                Model.SubCategory.Name.Contains("Lost Pet"))
+                                {
+                                    <div class="form-group col-12 com-sm-6">
+                                        <label>Species</label>
+                                        @Html.DropDownList("modelSpecies", SpeciesList.List, "-Select-", new
+                                        {
+                                            @class = "form-control"
+                                        })
+                                    </div>
+                                }
+                            }
+                            @if (Model.Category != null)
+                            {
+                                if (Model.Category.Name.Equals("Jobs"))
+                                {
+                                    <div class="form-group col-12 col-sm-6">
+                                        <label>Job type</label>
+                                        @Html.DropDownList("modelJobType", Model.SelectLists.SingleOrDefault(x => x.Name == "JobTypeList").List, "-Job type-", new
+                                        {
+                                            @class = "form-control"
+                                        })
+                                    </div>
+
+                                    <div class="form-group col-12 col-sm-6">
+                                        <label>Salary type</label>
+                                        @Html.DropDownList("modelSalaryInfo", Model.SelectLists.SingleOrDefault(x => x.Name == "SalaryInfoList").List, "-Salary-", new
+                                        {
+                                            @class = "form-control"
+                                        })
+                                    </div>
+                                }
+                                <!--Price / Salary-->
+                                <div class="form-group col-12">
+                                    <label>@(!Model.Category.Name.Equals("Jobs") ? "Price range" : "Salary range")</label>
+                                    <div class="row">
+                                        <div class="col-6 col-sm-6">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend"><span class="input-group-text">$</span></div>
+                                                <input type="text" class="form-control price-input" data-val="true" data-val-regex="Invalid format. Example (12345)" data-val-regex-pattern="^([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*|([1-9]{1}[0-9]*))$" placeholder="min" value="@(!string.IsNullOrEmpty(ViewBag.Filter_minPrice) ? ViewBag.Filter_minPrice : null)" name="minPrice" />
+                                            </div>
+                                            @Html.ValidationMessage("minPrice", htmlAttributes: new { @class = "text-danger" })
+                                        </div>
+                                        <div class="col-6 col-sm-6">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend"><span class="input-group-text">$</span></div>
+                                                <input type="text" class="form-control price-input" data-val="true" data-val-regex="Invalid format. Example (12345)" data-val-regex-pattern="^([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*|([1-9]{1}[0-9]*))$" placeholder="max" value="@(!string.IsNullOrEmpty(ViewBag.Filter_maxPrice) ? ViewBag.Filter_maxPrice : null)" name="maxPrice" />
+                                            </div>
+                                            @Html.ValidationMessage("maxPrice", htmlAttributes: new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>                             
+                            }
+                            <!--Search-->      
+                            <div class="form-group col-12 col-sm-6">
+                                <label>Search only</label>                            
+                                @{
+                                var solist = Model.SelectLists.SingleOrDefault(x => x.Name.Equals("Search Only")).List;
+                                @Html.DropDownList("searchonlyOption", solist, new { @class = "form-control" });
+                                }
+                            </div>
+                            <div class="form-group col-12 col-sm-6">
+                                <label>Ad Type</label>
+                                @Html.DropDownList("adtypeString", new SelectList(atlist.List, "Text", "Value"), new { @class = "form-control" }) 
+                            </div>                    
+
+                            <div class="col-6" style="margin-top: 10px;padding-left:15px;">
+                                @Html.ActionLink("Clear Filter", "AdList", "ClassifiedAd", new { @category = ViewBag.SeoCurrentCategory, @location = ViewBag.SeoLocation, @catId = ViewBag.CategoryId, @subCatId = ViewBag.SubCategoryId }, htmlAttributes: new { @class = "btn btn-secondary btn-sm" })
+                            </div>
+                            <div class="col-6 pull-right" style="margin-top: 10px;padding-right:15px;">
+                                <button class="btn btn-primary pull-right btn-sm" type="submit">Update results</button>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

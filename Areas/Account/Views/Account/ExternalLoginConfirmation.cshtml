@@ -1,0 +1,78 @@
+﻿@model Trinbago_MVC5.Areas.Account.Models.ExternalLoginConfirmation
+@{
+    ViewBag.Title = "Register";
+    string msg = ViewBag.StatusMessage;
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8 offset-sm-2">
+            <div class="card">
+                <div class="card-header">
+                    <span>
+                        <span style="font-size:large">@ViewBag.Title</span>
+                        <strong class="message-success" style="color:green">@ViewBag.StatusMessage</strong>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="form-vertical">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { Area = "Account", returnUrl = ViewBag.ReturnUrl }))
+                                    {
+                                        @Html.AntiForgeryToken()
+
+                                        <fieldset>
+                                            <legend>Associate your @ViewBag.LoginProvider account.</legend>
+                                            <p>
+                                                You've successfully authenticated with <strong>@ViewBag.LoginProvider</strong>.
+                                                Please enter a user name for this site below and click the Confirm button to finish
+                                                logging in.
+                                            </p>
+
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        @Html.LabelFor(m => m.Email)
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        @Html.TextBoxFor(m => m.Email, htmlAttributes: new { @class = "form-control" })
+                                                        @Html.ValidationMessage("Email", htmlAttributes: new { style = "color:red" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        @Html.LabelFor(m => m.PosterName)
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        @Html.TextBoxFor(m => m.PosterName, htmlAttributes: new { @class = "form-control" })
+                                                        @Html.ValidationMessage("Name", htmlAttributes: new { style = "color:red" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="submit" class="btn btn-primary btn-sm pull-right" style="margin:5px;" value="Register" />
+                                            @Html.ActionLink("Cancel", "Login", "Account", routeValues: new { Area = "Account" }, htmlAttributes: new { @class = "btn btn-secondary btn-sm pull-right", style = "margin:5px;" })
+                                        </fieldset>
+                                    }
+                                    @if (ViewBag.UNE == "true")
+                                    {
+                                        <section class="social" id="socialLoginForm">
+                                            @Html.Action("ExternalLoginsList", "Account", new { Area = "Account", returnUrl = ViewBag.ReturnUrl })
+                                        </section>
+                                        <a href="@Url.Action("Register","Account", new { Area = "Account" })" class="btn btn-primary btn-sm pull-right">Create a local account</a>
+                                    }
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/Change pass-->
+    </div>
+    <br>
+</div>

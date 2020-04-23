@@ -1,0 +1,223 @@
+﻿@model Trinbago_MVC5.Models.IndexPage
+@using Trinbago_MVC5.Extensions
+
+<!--Search-->
+@{Html.RenderPartial("_SearchBarPartial", Model.SelectLists);}
+@section social{
+    @Scripts.RenderFormat(@"<script src=""{0}"" async></script>", "~/bundles/social")
+}
+<div id="listings-page" class="container">
+    <!--Ad Count-->
+    <div class="col-12 mt-5 mb-5 text-center">
+        <div style="font-size:20px;line-height:1.5;">
+            @Model.AdCount <h1 class="clean d-inline">Free Classified Ads In Trinidad and Tobago</h1>
+        </div>
+    </div>
+    <!--Categories bar-->
+    <div class="cat-tile-title">
+        <ul class="text-center list-unstyled m-0 d-md-inline-flex w-100">
+            <li class="mx-md-auto">
+                <h3 class="m-3"><a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "classified-ads", @catId = 0, @subCatId = 0 })">All Categories</a></h3>
+            </li>
+            <li class="mx-md-autoo">
+                <h3 class="m-3"><a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "vehicles", @catId = 1, @subCatId = 0 })">Vehicles</a></h3>
+            </li>
+            <li class="mx-md-auto">
+                <h3 class="m-3"><a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "real-estate", @catId = 2, @subCatId = 0 })">Real Estate</a></h3>
+            </li>
+            <li class="mx-md-auto">
+                <h3 class="m-3"><a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "pets", @catId = 3, @subCatId = 0 })">Pets</a></h3>
+            </li>
+            <li class="mx-md-auto">
+                <h3 class="m-3"><a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "business-services", @catId = 4, @subCatId = 0 })">Business Services</a></h3>
+            </li>
+            <li class="mx-md-auto">
+                <h3 class="m-3"><a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "buy-sell", @catId = 5, @subCatId = 0 })">Buy & Sell</a></h3>
+            </li>
+            <li class="mx-md-auto">
+                <h3 class="m-3"><a href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = "jobs", @catId = 6, @subCatId = 0 })">Jobs</a></h3>
+            </li>
+        </ul>
+    </div>
+    <!--Regular category list-->
+    @{ var adsensecounter = 0;}
+    @foreach (var ct in Model.CategoryTiles)
+    {
+        <div class="cat-tile-title"><h2 class="text-center m-0"><a style="font-size:25px;" href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = ct.SeoName, @catId = ct.Id, @subCatId = 0 })">@ct.Name</a></h2></div>
+        <div class="card bg-lighter" style="box-shadow:none;border:0;">
+            <div class="card-body">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 col-sm-6">
+                            <div class="row">
+                                @foreach (var featured in ct.FeaturedAds)
+                                {
+                                    <div class="col-12">
+                                        <a href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", category = featured.SeoCategory, location = featured.SeoLocation, Id = featured.Id, title = featured.SeoTitle })">
+                                            <div class="cat-tile-container d-lg-flex">
+                                                <div class="cat-tile-img-container">
+                                                    <div id="@(featured.FeaturedAdStatus ? featured.UrgentAdStatus ? "urgentFeaturedHomeTag" : "featuredHomeTag" : "")"></div>
+                                                    <img src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = featured.Id, @FileName = featured.AdList_FileName })" class="cat-tile-img" title="@(featured.ModelName ?? featured.SubCategoryName) Image" alt="@(featured.ModelName ?? featured.SubCategoryName) Image">
+                                                </div>
+                                                <div class="cat-tile-body-container">
+                                                    <h5 style="color:royalblue;font-weight:bold;">
+                                                        @featured.Title
+                                                    </h5>
+                                                    <p>
+                                                        @featured.Price
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <div class="cat-tile-title-small">Popular Categories</div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <ul class="cat-tile-ul">
+                                                @foreach (var popc in ct.PopularSubcats)
+                                                {
+                                                    <li><a style="color:#007bff;" href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = popc.SeoName, @catId = ct.Id, @subCatId = popc.Id })">@popc.Name</a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <div class="cat-tile-title-small">Recently Posted</div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <ul class="cat-tile-ul">
+                                                @foreach (var rec in ct.RecentlyPosted)
+                                                {
+                                                    <li><a style="color:#007bff;" href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", category = rec.SeoCategory, location = rec.SeoLocation, Id = rec.Id, title = rec.SeoTitle })">@rec.Title@(rec.IsNew ? new HtmlString("&nbsp;<span class='bg-danger' style='color:white;padding: 2px;font-size: 10px;'>NEW</span>") : null)</a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Ad Sense-->
+                                @if (!HttpContext.Current.IsDebuggingEnabled)
+                                {
+                                <div class="col-12 mt-4" style="text-align:center;">
+                                    @Html.GoogleAdSense("g-adsense-home_" + adsensecounter++)
+                                </div>                            
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-sm-12 col-md-8">
+            <div class="row mainpage-categories">
+                <div class="col-sm-12">
+                    <ul class="nav nav-tabs" id="myTab">
+                        <li class="nav-item"><a class="index-nav-tabs nav-link" data-toggle="tab" href="#updnws">Updates/News</a></li>
+                        <li class="nav-item"><a class="index-nav-tabs nav-link" data-toggle="tab" href="#recentpost">Recent Ads</a></li>
+                        <li class="nav-item"><a class="index-nav-tabs nav-link" data-toggle="tab" href="#randpick">Random Picks</a></li>
+                    </ul>
+                    <div class="tab-content " id="myTabContent">
+                        <div id="updnws" class="tab-pane categories-pane">
+                            <a class="twitter-timeline" href="https://twitter.com/TrinbagoHotspot?ref_src=twsrc%5Etfw" data-tweet-limit="3">Tweets by @@TrinbagoHotspot</a>
+                            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        </div>
+                        <div id="recentpost" class="tab-pane fade categories-pane active">
+                            @{Html.RenderPartial("_RecentlyAddedPartial", Model.ClassifiedAdListRecent); }
+                        </div>
+                        <div id="randpick" class="tab-pane fade categories-pane">
+                            @{ Html.RenderPartial("_RandomPickedPartial", Model.ClassifiedAdRandomPicks);}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 col-md-4 ">
+            <br class="hidden-md hidden-lg" />
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-12  col-lg-11 pull-right">
+
+                    <div class="card" style="margin-bottom:20px;">
+                        <div class="card-header text-center">Quick guide</div>
+                        <ul class="list-group">
+                            <li class="list-group-item" style="border-top:0;border-left:0;border-right:0;">@Html.ActionLink("Tips and Guides", "Guides", "Home")</li>
+                            <li class="list-group-item" style="border-left:0;border-right:0;">@Html.ActionLink("Terms and Conditions", "Terms", "Home")</li>
+                            <li class="list-group-item" style="border-left:0;border-right:0;">@Html.ActionLink("Privacy Policy", "Privacy", "Home")</li>
+                            <li class="list-group-item" style="border-left:0;border-right:0;">@Html.ActionLink("About Us", "About", "Home")</li>
+                            <li class="list-group-item" style="border-left:0;border-right:0;border-bottom:0;">@Html.ActionLink("Help/Contact Us", "Contact", "Home")</li>
+                        </ul>
+
+                    </div>
+                </div>
+
+                <!--Social Links-->
+                <div class="col-12 col-sm-6 col-md-12  col-lg-11 pull-right">
+
+                    <div class="card">
+                        <div id="fb-root"></div>
+                        <div class="card-body" style="height: 102px; display: block;">
+                            <div class="fb-like" data-href="https://www.facebook.com/TrinbagoHotspot/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+                            <div class="fb-share-button" data-href="https://trinbagohotspot.com/" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftrinbagohotspot.com%2F&amp;src=sdkpreparse">Share</a></div>
+                            <br /><br />
+                            <!--Place this tag where you want the +1 button to render.-->
+                            <div class="g-plus" data-action="share" data-annotation="bubble" data-height="24"></div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="https://twitter.com/TrinbagoHotspot" class="twitter-follow-button" data-dnt="true">Follow twitterapi</a>
+                        </div>
+                    </div>
+                    <p class="main_slogan" style="margin: 28px 0">Currently listing @Model.AdCount classified ads in Trinidad and Tobago.</p>
+                </div>
+                <!--/Social Links-->
+                @if (Model.SponsoredAds != null)
+                {
+                    if (Model.SponsoredAds.Count() > 0)
+                    {
+                        <div class="col-12 col-sm-4 col-md-12  col-lg-11 pull-right">
+
+                            <div class="card">
+                                <div class="card-header">Sponsored listings</div>
+                                <div class="card-body">
+                                    <div class="featured-gallery">
+
+                                        <div class="row">
+                                            @foreach (var sa in Model.SponsoredAds)
+                                            {
+                                                <div class="col-sm-6 col-4 featured-thumbnail" data-toggle="tooltip" data-placement="top" title="Programmer job availiable at Uber in London">
+                                                    <a href="details.html" class="">
+                                                        @if (sa.SponsoredPhoto == null)
+                                                        {
+                                                            <img alt="sponsoredimg" src="/images/TH/noimage.png" style="width: 100%">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img alt="sponsoredimg" class="img-responsive" src="~/@sa.SponsoredPhoto.StringId/SponsoredAds/@sa.StringId.Substring(2, 4)/@sa.StringId.Substring(0, 4)">
+                                                        }
+                                                    </a>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <!--/Regular category list-->
+</div>
+@section scripts{
+    <script>
+        indexPage();
+    </script>
+}

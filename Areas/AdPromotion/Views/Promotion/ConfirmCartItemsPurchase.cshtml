@@ -1,0 +1,155 @@
+﻿@model IEnumerable<Trinbago_MVC5.Areas.Promotion.Models.CartItemList>
+@{ 
+    ViewBag.Title = "Confirm Cart Items";
+}
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Ad List-->
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header">Summary</div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @{
+                                        if (Model != null && Model.Count() > 0)
+                                        {
+                                            <table class="table table-condensed">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Photo</th>
+                                                        <th>Title</th>
+                                                        <th>Promotion</th>
+                                                    </tr>
+                                                    @{var calctotal = 0.0;}
+                                                    @foreach (var ad in Model)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @ad.ClassifiedAdStringId
+                                                            </td>
+                                                            <td>
+                                                                @if (ad.ClassifiedAdAdPhoto != null)
+                                                                {
+                                                                <div class="col-12 col-sm-4 col-md-5 col-lg-2">
+                                                                    <a class="thumbnail confirmlist"><img alt="Image" src="~/Images/@ad.ClassifiedAdStringId.Substring(2, 4)/@ad.ClassifiedAdStringId.Substring(0, 4)/@ad.ClassifiedAdAdPhoto"></a>
+                                                                </div>
+                                                                }
+                                                                else
+                                                                {
+                                                                <div class="col-12 col-sm-4 col-md-5 col-lg-2" style="margin-bottom:5px;">
+                                                                    <a class="thumbnail confirmlist"><img alt="Image" src="/images/TH/noimage.png"></a>
+                                                                </div>
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                <div class="col-12 col-sm-8 col-md-7 col-lg-10" style="height:90px;margin-bottom:5px;">
+                                                                    @ad.ClassifiedAdTitle
+                                                                </div>
+                                                            </td>
+                                                            <td>                                                                
+                                                                <table class="table table-striped">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            @if (ad.BumpAdPIDays.HasValue)
+                                                                            {
+                                                                                calctotal += ad.BumpAdPIPrice.Value;
+
+                                                                                <th>
+                                                                                    @Html.Label("Bump Ad")
+                                                                                </th>
+                                                                                <td>
+                                                                                    <p>@string.Format("Every {0} Days For {1} Days {2:C}", ad.BumpAdPIInterval.Value, ad.BumpAdPIDays.Value, ad.BumpAdPIPrice.Value)</p>
+                                                                                </td>
+                                                                            }
+                                                                        </tr>
+                                                                        <tr>
+                                                                            @if (ad.TopAdPIDays.HasValue)
+                                                                            {
+                                                                                calctotal += ad.TopAdPIPrice.Value;
+
+                                                                                <th>
+                                                                                    @Html.Label("Top Ad")
+                                                                                </th>
+                                                                                <td>
+                                                                                    <p>@string.Format("{0} Days, {1:C}", ad.TopAdPIDays.Value, ad.TopAdPIPrice.Value)</p>
+                                                                                </td>
+                                                                            }
+                                                                        </tr>
+                                                                        <tr>
+                                                                            @if (ad.FeaturedAdPIDays.HasValue)
+                                                                            {
+                                                                                calctotal += ad.FeaturedAdPIPrice.Value;
+
+                                                                                <th>
+                                                                                    @Html.Label("Featured Ad")
+                                                                                </th>
+                                                                                <td>
+                                                                                    <p>@string.Format("{0} Days, {1:C}", ad.FeaturedAdPIDays.Value, ad.FeaturedAdPIPrice.Value)</p>
+                                                                                </td>
+                                                                            }
+                                                                        </tr>
+                                                                        <tr>
+                                                                            @if (ad.UrgentAdPIDays.HasValue)
+                                                                            {
+                                                                                calctotal += ad.UrgentAdPIPrice.Value;
+
+                                                                                <th>
+                                                                                    @Html.Label("Urgent Ad")
+                                                                                </th>
+                                                                                <td>
+                                                                                    <p>@string.Format("{0:C0}", ad.UrgentAdPIPrice.Value)</p>
+                                                                                </td>
+                                                                            }
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr></tr>
+                                                    <tr></tr>
+                                                    <tr>
+                                                        <th>Calculated Total</th>
+                                                        <td>@string.Format("{0:C0}", calctotal)</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    @Html.ActionLink("VISA", "PurchaseWithVISA", "Promotion", null, new { @class = "btn btn-sm btn-primary" })
+                                                </div>
+                                                <div class="col-md-2">
+                                                    @Html.ActionLink("Back", "PromoteAds", "Promotion", null, new { @class = "btn btn-sm btn-secondary" })
+                                                </div>
+                                                <div class="col-md-2">
+                                                    @Html.ActionLink("Back", "PromoteAds", "Promotion", null, new { @class = "btn btn-sm btn-secondary" })
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p>No ads promoted</p>
+                                            @Html.ActionLink("Promote an Ad", "PromoteAds", "Promotion", null, new { @class = "btn btn-primary" })
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </fieldset>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/Ad List-->
+    </div>
+    <br>
+</div>

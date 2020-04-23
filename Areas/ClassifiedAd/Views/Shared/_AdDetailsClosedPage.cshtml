@@ -1,0 +1,109 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdWithDetail
+@{
+    ViewBag.Title = "CLOSED " + @ViewBag.PageTitle;
+}
+
+<div class="row">
+    <div id="mobileAdBar" class="col-12 d-lg-none">
+        <div class="row">
+            <div class="col-6 mt-2 mb-2">
+                @Html.ActionLink("View More", "AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @category = Model.SubCategory.SeoName , @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = Model?.Category?.Id, @subCatId = Model?.SubCategory?.Id }, new { @class = "d-lg-none btn btn-sm btn-outline-primary col-12" })
+            </div>
+            <div class="col-6 mt-2 mb-2">
+                @Html.ActionLink("Post Ad", "CreateAd", "ClassifiedAdManage", new { Area = "ClassifiedAd", @subCatId = string.Empty }, new { @class = "d-lg-none btn btn-sm btn-outline-postad col-12" })
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-3">
+        <div class="card">
+            <div class="panel-heading adClose glow">@(Model.Status == 1 ? "Sold!" : Model.Status == 2 ? "Rented!" : "Ad Closed!")</div>
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <a href="@Url.Action("AdminRemoveUserAd", "Admin", new { Area = "Admin", adId = Model.Id , pageNumber = 0})">Admin Delete</a>
+            }
+
+            <div class="card-body">
+                <div class="form-vertical">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-12 col-sm-4 col-md-4 col-lg-3">
+                                @if (Model.Photos != null && Model.Photos.Count() > 0)
+                                {
+                                    <div class="thumbnail list"><img title="@(Model.ModelName ?? Model.SubCategory.Name) Image" alt="@(Model.ModelName ?? Model.SubCategory.Name) Image" src="~/Images/@Model.StringId.Substring(2, 4)/@Model.StringId.Substring(0, 4)/@Model.Photos.FirstOrDefault().AdDetails_FileName"></div>
+                                }
+                                else
+                                {
+                                    <div class="thumbnail list"><img title="@(Model.ModelName ?? Model.SubCategory.Name) Image" alt="@(Model.ModelName ?? Model.SubCategory.Name) Image" src="/images/TH/noimage.png"></div>
+                                }
+                            </div>
+                            <div class="col-12 col-sm-8 col-md-8 col-lg-9">
+                                <p><a id="viewalllink" style="display:block;overflow-wrap:break-word;font-size:medium;"><h2 class="clean">@(Model.Status == 1 ? new HtmlString("<span class='glow'>[SOLD] </span>" + "<span style='text-decoration: line-through;'>" + @Model.Title + "</span>") : Model.Status == 2 ? new HtmlString("<span class='glow'>[RENTED] </span>" + "<span style='text-decoration: line-through;'>" + @Model.Title + "</span>") : new HtmlString("<span>" + @Model.Title + "</span>")) - <strong>@((Model.PriceInfo.Equals("Please Contact")) ? "Please Contact" : (Model.PriceInfo.Equals("See Ad For Details") ? "See Ad For Details" : string.Format("{0:C0}", Model.Price)))</strong></h2></a></p>
+                                @{var days = @DateTime.Now.Date.Subtract(@Model.TimeStamp.Date).Days;}
+                                <br />
+                                @if (days == 0)
+                                {
+                                    <p class="muted">Posted today</p>
+                                }
+                                else if (days == 1)
+                                {
+                                    <p class="muted">Posted @days day ago</p>
+                                }
+                                else
+                                {
+                                    <p class="muted">Posted @days days ago</p>
+                                }
+
+                                @if (Model.AdInfo != null)
+                                {
+                                    if (Model.AdInfo.Count > 0)
+                                    {
+                                        @:<p class="ad-description">
+                                            foreach (var ai in Model.AdInfo)
+                                            {
+                                                if (ai.Description != null)
+                                                {
+                                                    @:<strong>@ai.Name : <span class="ad-description-span">@ai.Description</span>@((ai.Name.Equals("Mileage")) ? " km" : ((ai.Name.Equals("Size")) ? " sq ft" : ""))</strong>
+                                                }
+                                            }
+                                            @:</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="ad-description">
+                                            <strong>Submitted : <span class="ad-description-span">@Model.TimeStamp</span></strong>
+                                            @if (!string.IsNullOrEmpty(Model.PriceInfo))
+                                            {
+                                                if (!Model.PriceInfo.Equals("Please Contact"))
+                                                {
+                                                    <strong>Price Info : <span class="ad-description-span">@Model.PriceInfo</span></strong>
+                                                }
+                                            }
+                                        </p>
+                                    }
+                                    <br />
+                                    <p id="rawdesc">@Model.HtmlFreeDescription</p>
+                                }
+                                else
+                                {
+                                    <p class="ad-description">
+                                        <strong>Submitted : <span class="ad-description-span">@Model.TimeStamp</span></strong>
+                                        @if (!string.IsNullOrEmpty(Model.PriceInfo))
+                                        {
+                                            if (!Model.PriceInfo.Equals("Please Contact") && !Model.PriceInfo.Equals("None"))
+                                            {
+                                                <strong>Price Info : <span class="ad-description-span">@Model.PriceInfo</span></strong>
+                                            }
+                                        }
+                                    </p>
+                                    <p id="rawdesc">@Model.HtmlFreeDescription</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Post and Ad-->

@@ -1,0 +1,63 @@
+﻿@model Trinbago_MVC5.Areas.Account.Models.ForgotPass
+
+@{
+    ViewBag.Title = "ForgotPass";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        <!--Change pass-->
+        <div class="col-sm-8 offset-sm-2">
+            <div class="card">
+                <div class="card-header">
+                    <span>
+                        <span style="font-size:large">Reset your password</span>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="form-vertical">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @using (Html.BeginForm("ForgotPass", "Account", new { Area = "Account", returnUrl = ViewBag.ReturnUrl }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.ValidationSummary(true)
+
+                                        <fieldset>
+
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        @Html.LabelFor(m => m.Email)
+                                                    </div>
+                                                    <div class="col-sm-7">
+                                                        @Html.TextBoxFor(m => m.Email, htmlAttributes: new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(m => m.Email, "", htmlAttributes: new { style = "color:red" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <input type="submit" class="btn btn-primary btn-sm pull-right" style="margin:5px;" value="Send password reset email" />
+                                            @Html.ActionLink("Cancel", "Login", "Account", routeValues: new { Area = "Account" }, htmlAttributes: new { @class = "btn btn-secondary btn-sm pull-right", style = "margin:5px;" })
+                                        </fieldset>
+                                    }
+                                    @if (ViewBag.UNE == "true")
+                                    {
+                                        <section class="social" id="socialLoginForm">
+                                            @Html.Action("ExternalLoginsList", new { Area = "Account", returnUrl = ViewBag.ReturnUrl })
+                                        </section>
+                                        <a href="@Url.Action("Register","Account", new { Area = "Account" })" class="btn btn-primary btn-sm pull-right">Create a local account</a>
+                                    }
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/Change pass-->
+    </div>
+    <br>
+</div>

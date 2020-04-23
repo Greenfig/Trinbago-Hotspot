@@ -1,0 +1,125 @@
+﻿@model Trinbago_MVC5.Models.AdInfoPartial
+
+<div id="accordianAI" class="card mb-2">
+    <button type="button" class="btn btn-link card-header" data-toggle="collapse" data-target="#collapseAdInfo" aria-expanded="false" aria-controls="collapseAdInfo" style="text-decoration:none;">Click For More Ad Info <span class="fa fa-plus"></span></button>
+    <div id="collapseAdInfo" class="collapse" data-parent="#accordianAI">
+        <div class="card-body">
+            <div class="form-horizontal">
+                <div class="row">
+                    @{
+                        var ai = Model.AdInfo.Where(x => !x.Name.Equals("Make") && !x.Name.Equals("Model"));
+                        int cal = 2;
+                        foreach (var item in ai)
+                        {
+                            @Html.Hidden("AdInfo[" + cal + "].Name", item.Name)
+                            if (item.Name.Equals("Mileage"))
+                            {
+                                <div class="form-group col-12 col-sm-6">
+                                    <label class="col-form-label">@item.Name</label>
+                                    <div class="col-12 col-12 col-sm-12 col-md-12 col-lg-8 p-0">
+                                        <div class="input-group">
+                                            @Html.TextBox("AdInfo[" + cal + "].Description", item.Description, new
+                                            {
+                                                id = item.Name,
+                                                @class = "form-control valid",
+                                                @data_val = "true",
+                                                @data_val_regex = "Invalid format. Example (12345)",
+                                                @data_val_regex_pattern = @"^([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*|([1-9]{1}[0-9]*))$"
+                                            })
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">km</span>
+                                            </div>
+                                        </div>
+                                        @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            }
+                            else if (item.Name.Equals("Year"))
+                            {
+                                <div class="form-group col-12 col-sm-6">
+                                    <label class="col-form-label">@item.Name</label>
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 p-0">
+                                        @Html.TextBox("AdInfo[" + cal + "].Description", item.Description, new
+                                        {
+                                            id = item.Name,
+                                            @class = "form-control valid",
+                                            placeholder = "Example (1900)",
+                                            @data_val = "true",
+                                            @data_val_regex = "Invalid format. Example (1900)",
+                                            @data_val_regex_pattern = @"^([1-2]{1}[0-9]{3})$"
+                                        })
+                                        @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            }
+                            else if (item.Name.Equals("Condition"))
+                            {
+                                <div class="form-group col-12 col-sm-6">
+                                    @Html.Label(item.Name, htmlAttributes: new { @class = "col-form-label" })
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 p-0">
+                                        @Html.DropDownList("AdInfo[" + cal + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name == "ConditionList").List, "-Select a Condition-", new
+                                        {
+                                            id = item.Name,
+                                            @class = "form-control"
+                                        })
+                                        @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            }
+                            else if (item.Name.Equals("Fuel Type"))
+                            {
+                                <div class="form-group col-12 col-sm-6">
+                                    @Html.Label(item.Name, htmlAttributes: new { @class = "col-form-label" })
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 p-0">
+                                        @Html.DropDownList("AdInfo[" + cal + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name == "FuelTypeList").List, "-Select a Fuel Type-", new
+                                        {
+                                            id = item.Name,
+                                            @class = "form-control"
+                                        })
+                                        @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            }
+                            else if (item.Name.Equals("Engine Size"))
+                            {
+                                <div class="form-group col-12 col-sm-6">
+                                    @Html.Label(item.Name, htmlAttributes: new { @class = "col-form-label" })
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 p-0">
+                                        @Html.TextBox("AdInfo[" + cal + "].Description", item.Description, new
+                                        {
+                                            id = item.Name,
+                                            @class = "form-control valid",
+                                            @placeholder = "1500 cc OR 1.5 L OR V6",
+                                            @data_val = "true",
+                                            @data_val_regex = "Invalid format. Example (1500 cc OR 1.5 L OR V6)",
+                                            @data_val_regex_pattern = @"^([0-9]{1}\.[0-9]{1}\s?[L])$|^([1-9]{1}[0-9]{1}\s?[L])$|^([1-9]{1}[0-9]{1,4}\s?[c][c])$|^(([V]|[v])([6]|[8]|[1][2]))$"
+                                        })
+                                        @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            }
+                            else if (item.Name.Equals("Colour"))
+                            {
+                                <div class="form-group col-12 col-sm-6">
+                                    @Html.Label(item.Name, htmlAttributes: new { @class = "col-form-label" })
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 p-0">
+                                        @Html.TextBox("AdInfo[" + cal + "].Description", item.Description, new
+                                        {
+                                            id = item.Name,
+                                            @class = "form-control",
+                                            @data_val = "true",
+                                            @data_val_regex = "Colour field exceeds the maximum length of 40!",
+                                            @data_val_regex_pattern = @"^[a-zA-Z.]{0,40}$"
+                                        })
+                                        @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            }
+                            cal++;
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

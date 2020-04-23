@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "Promote User Ad";
+}
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <div class="col-sm-12 col-md-9 col-lg-9">
+            <div class="card">
+                <div class="card-header">Search Ad To Promote</div>
+                @using (Ajax.BeginForm("AdminFindPromoteAd", "Admin", new { Area = "Admin" }, new AjaxOptions { UpdateTargetId = "ajaxPromo" }, new { style = "padding:1.25rem;"}))
+                {
+                    <div class="row" style="margin:0;">
+                        @Html.TextBox("adId", null, new { @class = "jumbo-form-control no-border-radius col-12 col-sm-10", @placeholder = "Search an ad by id", @type = "search" })
+                        <button id="SearchButton" class="btn btn-primary no-border-radius col-12 col-sm-2 col-md-2" type="submit" value="Submit"><i class="fa fa-search"></i></button>
+                    </div>
+                }
+                <div id="ajaxPromo"></div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>

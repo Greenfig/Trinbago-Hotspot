@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "Resource Not Found";
+}
+<hr class="topbar" />
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <hgroup class="title container">
+                <h1 class="error">Resource Not Found ¯\_(ツ)_/¯</h1>
+            </hgroup>
+        </div>
+        <div class="card-body">
+            <h2 class="error">The resource you are looking for has been removed, had its name changed, or is temporarily unavailable.</h2>
+            <div class="col-md-12" style="text-align:center;">
+                @Html.ActionLink("Home Page", "Index", "Home", null, new { @class = "btn btn-primary" })
+            </div>
+            <br />
+            <br />
+        </div>
+    </div>
+</div>
+
+

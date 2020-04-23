@@ -1,0 +1,39 @@
+﻿@model Trinbago_MVC5.Areas.Admin.Models.SubCategoryAddForm
+@using Trinbago_MVC5.IdentityExtensions
+@{
+    ViewBag.Title = "SubCategory Add";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        @using (Html.BeginForm("SubCategoryAdd", "AdminManage", FormMethod.Post, new { @class = "col-md-9" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header"><h1>Add Sub Category&nbsp;<small>(@User.Identity.GetPosterName())</small></h1></div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.CategoryId)
+                            @Html.EditorFor(model => model.CategoryId)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name)
+                            @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Name)
+                        </div>
+                        <div class="col-12">
+                            <input type="submit" class="btn btn-primary btn-sm pull-right" style="margin-left:5px;" value="Create" />
+                            @Html.ActionLink("Back to List", "CategoryDetails", new { @id = Model.CategoryId }, htmlAttributes: new { @class = "btn btn-secondary btn-sm pull-right", style = "margin-right:5px;" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <br>
+</div>
+

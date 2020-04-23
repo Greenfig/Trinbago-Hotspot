@@ -1,0 +1,121 @@
+﻿@model Trinbago_MVC5.Areas.User.Models.MyProfile
+
+@{
+    ViewBag.Title = "My Account";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--MYProfile-->
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header">Manage account</div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        @Html.LabelFor(model => model.PosterName)
+                                    </div>
+                                    <div class="col-sm-4">
+                                        @Html.DisplayFor(model => model.PosterName)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        @Html.LabelFor(model => model.Email)
+                                    </div>
+                                    <div class="col-sm-4">
+                                        @Html.DisplayFor(model => model.Email)
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <h2 style="font-weight:900">Default contact info</h2>
+                            <hr />
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        @Html.LabelFor(model => model.ContactName)
+                                    </div>
+                                    <div class="col-sm-4">
+                                        @if (!string.IsNullOrEmpty(Model.ContactName))
+                                        {
+                                            @Html.DisplayFor(model => model.ContactName)
+                                        }
+                                        else
+                                        {
+                                            @:No default set
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        @Html.LabelFor(model => model.ContactNumber)
+                                    </div>
+                                    <div class="col-sm-4">
+                                        @if (!string.IsNullOrEmpty(Model.ContactNumber))
+                                        {
+                                            @:1-(868)-@Html.DisplayFor(model => model.ContactNumber)                                            
+                                        }
+                                        else
+                                        {
+                                            @:No default set
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        @Html.LabelFor(model => model.ContactNumber2)
+                                    </div>
+                                    <div class="col-sm-4">
+                                        @if (!string.IsNullOrEmpty(Model.ContactNumber2))
+                                        {
+                                            @:1-(868)-@Html.DisplayFor(model => model.ContactNumber2)
+                                        }
+                                        else
+                                        {
+                                            @:No default set
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        @Html.LabelFor(model => model.ContactNumber3)
+                                    </div>
+                                    <div class="col-sm-4">
+                                        @if (!string.IsNullOrEmpty(Model.ContactNumber3))
+                                        {
+                                            @:1-(868)-@Html.DisplayFor(model => model.ContactNumber3)
+                                        }
+                                        else
+                                        {
+                                            @:No default set
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            @Html.ActionLink("Change contact info", "ContactInfo", "User", new { Area = "User" }, htmlAttributes:new{ @class="btn btn-primary btn-sm pull-right", @style="margin:5px;" })
+
+                            @Html.ActionLink("Change Password", "ChangePassword", "Account", new { Area = "Account" }, htmlAttributes: new { @class = "btn btn-info btn-sm pull-right", style = "margin:5px;" })
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/MYProfile-->
+    </div>
+    <br>
+</div>

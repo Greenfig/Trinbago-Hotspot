@@ -1,0 +1,17 @@
+﻿@model Trinbago_MVC5.Models.AdInfoPartial
+
+
+@{
+    int cal = 0;
+    foreach (var item in Model.AdInfo)
+    {
+        @Html.Hidden("AdInfo[" + cal + "].Name", item.Name)
+        if (item.Name.Equals("Coordinates"))
+        {
+            @Html.Hidden("AdInfo[" + cal + "].Description", item.Description)
+        }
+        cal++;
+    }
+}
+
+

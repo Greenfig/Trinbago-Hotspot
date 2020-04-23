@@ -1,0 +1,55 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.AdListDetailParent
+
+<!--Ad List-->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 p-0">
+            @if (Model.RelatedAds != null)
+            {
+                if (Model.RelatedAds.Count() > 0)
+                {
+                    <div class="content-box related-container">
+                        <div>
+                            <div class="inner">
+                                <h2 class="related p-0">
+                                    <span style="color:darkorange;">Related Ads</span>
+                                    <a id="viewalllink" href="@Url.Action("AdList", "ClassifiedAd", new { Area = "ClassifiedAd", @location = ViewBag.SeoLocation, @CountryId = ViewBag.CountryId, @RegionId = ViewBag.RegionId, @catId = Model?.Model1?.Category?.Id, @subCatId = Model?.Model1?.SubCategory?.Id })" class="btn btn-outline-primary btn-sm pull-right" style="margin-top:-5px;font-weight:bold;"> View all <i class="fa fa-list"></i></a>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="owl-carousel owl-theme">
+                            @foreach (var rad in Model.RelatedAds)
+                            {
+                                <div class="item">
+                                    <a href="@Url.Action("AdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", category = rad.SeoCategory, location = rad.SeoLocation, Id = rad.Id, title = rad.SeoTitle })" class="related-item-container">
+                                        <div class="col-12 p-0">
+                                            <div class="card">
+                                                <div class="card-body p-0">
+                                                    <div class="related-item-img-container">
+                                                    @if (rad.AdPhoto)
+                                                    {
+                                                        <img title="@(rad.ModelName ?? rad.SubCategoryName) Image" alt="@(rad.ModelName ?? rad.SubCategoryName) Image" class="related-item-img" src="@Url.Action("LoadLucenePhoto", "Photo", new { Area = "", @adId = rad.Id, @FileName = rad.AdList_FileName })" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img title="@(rad.ModelName ?? rad.SubCategoryName) Image" alt="@(rad.ModelName ?? rad.SubCategoryName) Image" class="related-item-img" src="~/Images/TH/noimage.png" />
+                                                    }
+                                                    </div>  
+                                                    <div class="col-md-12 related-item-title">@rad.Title</div>
+                                                    <div class="card-header" style="border:0;">
+                                                    <p class="related-item-price p-0 m-0">@rad.Price</p>                                                    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<!--/Ad List-->

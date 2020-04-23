@@ -1,0 +1,41 @@
+﻿@model Trinbago_MVC5.Models.Category
+@using Trinbago_MVC5.IdentityExtensions
+
+@{
+    ViewBag.Title = "CategoryAdd";
+}
+
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+
+        @using (Html.BeginForm("CategoryAdd", "AdminManage", new { Area = "Admin" }, FormMethod.Post, new { @class = "col-12 col-md-9" }))
+        {
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header"><h1>Create new category&nbsp;<small>(@User.Identity.GetPosterName())</small></h1></div>
+                    <div class="card-body">
+                        <form class="form-vertical">
+                            <div class="row">
+                                <div class="col-12">
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true)
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.Name)
+                                        @Html.TextBoxFor(m => m.Name, htmlAttributes: new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.Name)
+                                    </div>
+                                    <input type="submit" class="btn btn-primary btn-sm pull-right" style="margin-left:5px;" value="Create" />
+                                    @Html.ActionLink("Back to List", "Country", null, htmlAttributes: new { @class = "btn btn-secondary btn-sm pull-right", style = "margin-right:5px;" })
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <br>
+</div>

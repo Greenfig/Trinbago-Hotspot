@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "OopsPage";
+}
+
+<hr class="topbar" />
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <hgroup class="title container">
+                <h1 class="error">Error &#3232;_&#3232;</h1>
+            </hgroup>
+        </div>
+        <div class="card-body">
+            <h2 class="error" style="line-height:1.5;">An error occurred while processing your request. Please try again or check our twitter feed below for website maintenance status</h2>
+            <div class="col-12" style="text-align:center;">
+                @Html.ActionLink("Home Page", "Index", "Home", null, new { @class = "btn btn-primary" })
+            </div>
+            <br />
+            <br />
+            <div class="col-12" style="text-align:center;">
+                <a class="twitter-timeline" href="https://twitter.com/TrinbagoHotspot?ref_src=twsrc%5Etfw" data-tweet-limit="3" data-width="300" data-height="300">Tweets by @@TrinbagoHotspot</a>
+                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
+            <br />
+            <br />
+        </div>
+    </div>
+</div>

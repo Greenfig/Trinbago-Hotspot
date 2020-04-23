@@ -1,0 +1,203 @@
+﻿@model IEnumerable<Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdReportList>
+
+@{
+    ViewBag.Title = "Reports";
+}
+
+<hr class="topbar">
+<div class="container" style="min-width: 340px;">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <div class="col-sm-9">
+            <div class="card" style="min-width: 600px;">
+                <div class="card-header">Reported Ads <a href="@Url.Action("AdminDeleteAllClosedReportAds","Admin", new { Area = "Admin" })" class="btn btn-info btn-sm pull-right">Delete All</a></div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-12">
+
+                                    <table class="table edit-listings">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Report Status</th>
+                                                <th>Ad Status</th>
+                                                <th>Options</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var rep in Model)
+                                            {
+                                                var days = DateTime.Now.Date.Subtract(rep.CreatedDate.Date).Days;
+                                                if(rep.Status == 0){
+                                                    @:<tr class="active">
+                                                }
+                                                else
+                                                {
+                                                    @:<tr class="selected">
+                                                }
+                                                    
+                                                <td class="main-td">
+
+                                                    @Html.ActionLink(@rep.ReasonTitle.ToUpper(), "ListDetails", "ClassifiedAd", new { Area = "ClassifiedAd", stringId = @rep.ClassifiedAdStringId }, htmlAttributes: new { target = "_blank" })
+                                                    @if (days == 0)
+                                                    {
+                                                        <p>Today</p>
+                                                    }
+                                                    else if (days == 1)
+                                                    {
+                                                        <p class="text-muted">@days Day old</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="text-muted">@days Days old</p>
+                                                    }
+                                                    <p class="text-muted">@rep.ClassifiedAdStringId</p>
+                                                </td>
+
+                                                <td>
+                                                    <p>@(rep.Status == 0 ? "Open" : rep.Status == 1 ? "Closed" : "")</p>
+                                                </td>
+                                                <td>
+                                                    <p>
+                                                        @Html.Raw(rep.ClassifiedAdStatus == 0 ?
+                                                        "Open" : rep.ClassifiedAdStatus == 1 ?
+                                                        "Sold" : rep.ClassifiedAdStatus == 2 ?
+                                                        "Rented" : rep.ClassifiedAdStatus == -1 ?
+                                                        string.Format("Suspended {0}", (rep.OpenRequest ? "<span class='fa fa-asterisk' style='color:red;'></span>" : null)) : ""
+                                                            )
+                                                    </p>
+
+                                                </td>
+                                                <td>
+                                                    <button type = "button"
+                                                        data-toggle = "modal"
+                                                        data-target = "#myModal"
+                                                        data-adid ="@rep.ClassifiedAdId"
+                                                        data-ad-stringid = "@rep.ClassifiedAdStringId"
+                                                        data-rep-id = "@rep.Id"
+                                                        data-rep-title = "@rep.ReasonTitle"
+                                                        data-rep-desc = "@rep.ReasonDescription"
+                                                        data-rep-rus = "@rep.ReportingUser"
+                                                        data-rep-cre = "@rep.CreatedDate.ToLongDateString() @rep.CreatedDate.ToLongTimeString()"
+                                                        class="btn btn-danger btn-sm" style="margin-top:5px;margin-bottom:5px;">
+                                                        Report Details
+                                                    </button>
+                                                    @if (rep.Status == 1)
+                                                    {
+                                                        @:|
+                                                        <a class="btn btn-warning btn-sm" href="@Url.Action("AdminDeleteReportAd","Admin",new { Area = "Admin", @id = rep.Id })">Delete</a>
+                                                    }
+                                               </td>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+<!--Modals-->
+@using (Ajax.BeginForm("AdminCloseReport", "Admin", new { Area = "Admin" } , new AjaxOptions { UpdateTargetId = "myModal" }, null))
+{
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:scroll !important;">
+        <div class="modal-dialog" style="min-width: 310px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Report details</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body"> 
+                    <input type="hidden" id="repId" name="repId" value="" />                    
+                    <br />
+                    <table class="table-condensed table-striped">
+                        <tr>
+                            <th>Report Type</th>
+                            <td id="reptitle"></td>
+                        </tr>
+                        <tr>
+                            <th>Report Date</th>
+                            <td id="repcre"></td>
+                        </tr>
+                        <tr>
+                            <th>Reported By</th>
+                            <td id="reprus"></td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td id="repdesc"></td>
+                        </tr>
+                        <tr>
+                            <th>Options 1</th>
+                            <td>
+                                <a href="" id="adstringId_u" target="_blank">View Ad</a> |
+                                <a href="" id="adstringId_y" target="_blank">Edit Ad</a> |
+                                <a href="" id="adstringId_z" target="_blank">Change Category</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Options 2</th>
+                            <td>
+                                @Html.ActionLink("Suspend Ad", "AdminSuspendAd", "Admin", new { Area = "Admin", @adId = "x132xfake1" }, htmlAttributes: new { id = "adId_e" }) |
+                                @Html.ActionLink("Open Ad", "AdminOpenAd", "Admin", new { Area = "Admin", @adId = "x132xfake2" }, htmlAttributes: new { id = "adId_o" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Options 3</th>
+                            <td>
+                                @Html.ActionLink("Close Ad", "AdminCloseAd", "Admin", new { Area = "Admin", @adId = "x132xfake1", @closingOption = "None" }, htmlAttributes: new { id = "adId_c" }) |
+                                @Html.ActionLink("Sold", "AdminCloseAd", "Admin", new { Area = "Admin", @adId = "x132xfake2", @closingOption = "Sold" }, htmlAttributes: new { id = "adId_s" }) |
+                                @Html.ActionLink("Rented", "AdminCloseAd", "Admin", new { Area = "Admin", @adId = "x132xfake3", @closingOption = "Rented" }, htmlAttributes: new { id = "adId_r" })
+                            </td>
+                        </tr>
+                    </table>                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeId" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <input type="submit" value="Close Report" id="myModalSubmit" class="btn btn-primary pull-right" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section scripts{
+    <script>
+        //triggered when modal is about to be shown
+        $('#myModal').on('show.bs.modal', function (e) {
+            //get data-id attribute of the clicked element
+            var adId = $(e.relatedTarget).data('adid');
+            var adStringId = $(e.relatedTarget).data('ad-stringid');
+            var repId = $(e.relatedTarget).data('rep-id');
+            var repTitle = $(e.relatedTarget).data('rep-title');
+            var repDesc = $(e.relatedTarget).data('rep-desc');
+            var repRus = $(e.relatedTarget).data('rep-rus');
+            var repCre = $(e.relatedTarget).data('rep-cre');
+            //populate the textbox
+            $(e.currentTarget).find('#reptitle').text(repTitle);
+            $(e.currentTarget).find('#adId_e').attr("href", $(e.currentTarget).find('#adId_e').attr("href").toString().replace("x132xfake1", adId));
+            $(e.currentTarget).find('#adId_o').attr("href", $(e.currentTarget).find('#adId_o').attr("href").toString().replace("x132xfake2", adId));
+            $(e.currentTarget).find('#adId_c').attr("href", $(e.currentTarget).find('#adId_c').attr("href").toString().replace("x132xfake1", adId));
+            $(e.currentTarget).find('#adId_s').attr("href", $(e.currentTarget).find('#adId_s').attr("href").toString().replace("x132xfake2", adId));
+            $(e.currentTarget).find('#adId_r').attr("href", $(e.currentTarget).find('#adId_r').attr("href").toString().replace("x132xfake3", adId));
+            $(e.currentTarget).find('#adstringId_u').attr("href", "").attr("href", "/Admin/AdminUserAdDetails" + '/' + adStringId);
+            $(e.currentTarget).find('#adstringId_y').attr("href", "").attr("href", "/Admin/AdminEditUserAd" + '/' + adId);
+            $(e.currentTarget).find('#adstringId_z').attr("href", "").attr("href", "/Admin/AdminSelectAdCategory" + '/' + adId);
+            $(e.currentTarget).find('#repdesc').text(repDesc);
+            $(e.currentTarget).find('#reprus').text(repRus);
+            $(e.currentTarget).find('#repcre').text(repCre);
+            $(e.currentTarget).find('#repId').val(repId);
+
+        });
+
+        $('#myModal').on('click', '#okIdButtonSucceed', function () {
+            location.reload();
+        });
+    </script>
+    
+}

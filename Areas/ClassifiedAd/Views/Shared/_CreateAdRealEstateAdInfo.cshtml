@@ -1,0 +1,73 @@
+﻿@model Trinbago_MVC5.Models.AdInfoPartial
+
+<div id="accordianAI" class="card mb-2">
+    <button type="button" class="btn btn-link card-header" data-toggle="collapse" data-target="#collapseAdInfo" aria-expanded="false" aria-controls="collapseAdInfo" style="text-decoration:none;">Click For More Ad Info <span class="fa fa-plus"></span></button>
+    <div id="collapseAdInfo" class="collapse" data-parent="#accordianAI">
+        <div class="card-body">
+            <div class="form-horizontal">
+                <div class="row">
+                    @{
+                        int cal = 0;
+                        if (Model.AdInfo.Any(x => x.Name.Equals("Bedrooms")))
+                        {
+                            cal += 1;
+                        }
+                        if(Model.AdInfo.Any(x => x.Name.Equals("Bathrooms")))
+                        {
+                            cal += 1;
+                        }
+                        if (Model.AdInfo.Any(x => x.Name.Equals("Rental Type")))
+                        {
+                            cal += 1;
+                        }
+                    
+                        var ai = Model.AdInfo.Where(x => !x.Name.Equals("Bedrooms") && !x.Name.Equals("Bathrooms") && !x.Name.Equals("Rental Type"));
+                        foreach (var item in ai)
+                        {
+                            @Html.Hidden("AdInfo[" + cal + "].Name", item.Name)
+                            if (item.Name.Equals("Furnished"))
+                            {
+                                <div class="form-group col-12 col-sm-6">
+                                    @Html.Label(item.Name, htmlAttributes: new { @class = "col-form-label" })
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 p-0">
+                                        <div class="input-group">
+                                            @Html.DropDownList("AdInfo[" + cal + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name == "FurnishedList").List, new { @class = "custom-select" })
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                                </div>
+                            }
+                            else if (item.Name.Equals("Size"))
+                            {
+                                <div class="form-group col-12 col-sm-6">
+                                    @Html.Label(item.Name, htmlAttributes: new { @class = "col-form-label" })
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 p-0">
+                                        <div class="input-group">
+                                            @Html.TextBox("AdInfo[" + cal + "].Description", item.Description, new
+                                            {
+                                                id = item.Name,
+                                                @class = "form-control",
+                                                @data_val = "true",
+                                                @data_val_regex = "Invalid Format. Example (1900)",
+                                                @data_val_regex_pattern = @"^([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*|([1-9]{1}[0-9]*))$"
+                                            })
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">Square feet</div>
+                                            </div>
+                                        </div>
+                                        @Html.ValidationMessage("AdInfo[" + cal + "].Description", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            }
+                            else if (item.Name.Equals("Coordinates"))
+                            {
+                                @Html.Hidden("AdInfo[" + cal + "].Description", item.Description)
+                            }
+                            cal++;
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

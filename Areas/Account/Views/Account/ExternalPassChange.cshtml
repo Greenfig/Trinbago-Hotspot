@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "External Pass Change";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Change pass-->
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header">
+                    <span>
+                        Manage account
+                        <strong class="message-success" style="color:green">@ViewBag.StatusMessage</strong>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="form-vertical">
+                        <fieldset>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <hgroup class="title">
+                                        <h1>@ViewBag.Title.</h1>
+                                    </hgroup>
+                                    <p>You're logged in as <strong>@User.Identity.Name</strong>.</p>
+                                    <hr />
+                                    <h2>Provider your account uses.</h2>
+                                    <span class="bg-info">@ViewBag.Provider</span>
+                                    <p>Change password on your relevant provider's page!</p>                                    
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/Change pass-->
+    </div>
+    <br>
+</div>
+
+
+
+@section Scripts {
+    
+}

@@ -1,0 +1,88 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.MyAdList
+@{
+    ViewBag.Title = "Manage Ads";
+}
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Ad List-->
+        <div class="col-sm-12 col-md-9 col-lg-9">
+            <div class="card">
+                <div class="card-header">Manage adverts (<b>@User.Identity.Name's</b> posted Ad list) @Html.DropDownList("searchType", @Model.SelectLists.SingleOrDefault(x => x.Name == "searchType").List, new { @class = "form-control" })</div>
+                <div class="card-body">
+                    <div class="form-vertical">
+                        <div class="row">
+                            <div class="col-sm-12" id="ajaxAdList">
+                                @{Html.RenderPartial("_MyAdsEditList", Model.MyAds);}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/Ad List-->
+    </div>
+    <br>
+</div>
+@if (Model.MyAds != null)
+{
+    if (Model.MyAds.Count() > 0)
+    {
+        <!--Modals Close-->
+        using (Ajax.BeginForm("MyAdClose", "ClassifiedAdManage", new { Area = "ClassifiedAd" }, new AjaxOptions { UpdateTargetId = "myModalClose" }))
+        {
+            <div class="modal fade" id="myModalClose" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:scroll !important;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="myModalLabel">You are about to close an ad</h3>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="adId" name="adId" value="" />
+                            <strong>Title:&nbsp;<weak id="adtitle"></weak></strong>
+                            <br/><br/>
+                            Closing this ad cannot be undone!
+                            <br /><br />
+                            <label class="form-group">Optional Closing Details</label>
+                            <select class="selectpicker" data-show-subtext='true' name="closingOption">
+                                <option data-subtext="Instantly Removed" >Remove</option>
+                                <option data-subtext="Removed after 30 days">Sold</option>
+                                <option data-subtext="Removed after 30 days">Rented</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="closeId" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <input type="submit" value="Close Ad" id="myModalSubmit" class="btn btn-primary pull-right" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        using (Ajax.BeginForm("MyAdRequestOpen", "ClassifiedAdManage", new { Area = "ClassifiedAd" }, new AjaxOptions { UpdateTargetId = "myModalOpenRequest" }))
+        {
+            <div class="modal fade" id="myModalOpenRequest" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:scroll !important;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Request to reopen my ad</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="adId" name="adid" value="" />
+                            <strong>You are about to send a request to open ad. Ensure that you have corrected any issues that caused the ad to be suspended.&nbsp;</strong>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="closeId" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <input type="submit" value="Request" id="myModalSubmit" class="btn btn-primary pull-right" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <!--/Modal Close-->
+    }
+}
+@ViewBag.AdRenewPopupMessage

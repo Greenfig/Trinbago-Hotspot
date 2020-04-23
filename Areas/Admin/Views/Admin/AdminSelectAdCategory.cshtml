@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Trinbago_MVC5.Models.CategoryList>
+
+@{
+    ViewBag.Title = "Determine the category for your ad.";
+}
+
+<!--Regular category list-->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="col-sm-12" style="text-align:center;">
+                <h2><span>Create Ad (Category for your ad)</span></h2>
+            </div>
+            <div class="directory">
+                <div class="col-12">
+                    <div class="row">
+                        @{
+                            var count = 0;
+                            foreach (var cat in Model)
+                            {
+                                <div class="col-sm-12 col-md-12 col-lg-4" style="padding:0 20px 0 20px;">
+                                    <div class="row cat-list">
+                                        <div class="col-sm-12">
+                                            <a class="row category-name" data-toggle="collapse" href="#collapse-@count" style="text-decoration:none;">
+                                                <h4 class="front-cat-h4 cat-title col-12">
+                                                    @if (cat.Name.Equals("Vehicles"))
+                                                    {
+                                                        <i class="fa fa-truck"></i>
+                                                    }
+                                                    else if (cat.Name.Equals("Real Estate"))
+                                                    {
+                                                        <i class="fa fa-home"></i>
+                                                    }
+                                                    else if (cat.Name.Equals("Pets"))
+                                                    {
+                                                        <i class="fa fa-paw"></i>
+                                                    }
+                                                    else if (cat.Name.Equals("Buy and Sell"))
+                                                    {
+                                                        <i class="fa fa-bullhorn"></i>
+                                                    }
+                                                    else if (cat.Name.Equals("Jobs"))
+                                                    {
+                                                        <i class="fa fa-suitcase"></i>
+                                                    }
+                                                    else if (cat.Name.Equals("Business Services"))
+                                                    {
+                                                        <i class="fa fa-wrench"></i>
+                                                    }
+                                                    <strong class="title-strong">@(cat.Name.ToUpper())</strong>
+                                                </h4>
+                                            </a>
+
+                                            <div id="collapse-@count" class="panel-collapse collapse">
+                                                <ul id="ulcatindex" class="cat-collapse cat-id-@count">
+                                                    @foreach (var sub in cat.SubCategories)
+                                                    {
+                                                        <li>@Html.ActionLink(sub.Name, "AdminChangeAdCategory", "Admin", new { Area = "Admin", @adId = ViewBag.adId, @subCatId = sub.Id  }, null)</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                count++;
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/Regular category list-->
+@section scripts{
+    <script>
+        categorySelectPage();
+    </script>
+}
+

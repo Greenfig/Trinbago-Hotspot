@@ -1,0 +1,177 @@
+﻿@model IEnumerable<Trinbago_MVC5.Models.GenericMessageQueue>
+ 
+@{
+    ViewBag.Title = "Message Queue";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header">Manage messages</div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-12">
+
+                                    <table class="table edit-listings">
+                                        <thead>
+                                            <tr>
+                                                <th>Message Title</th>
+                                                <th>Report Status</th>
+                                                <th>Ad Status</th>
+                                                <th>Options</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model != null)
+                                            {
+                                                if (Model.Count() > 0)
+                                                {
+                                                    foreach (var msg in Model)
+                                                    {
+                                                        var days = DateTime.Now.Date.Subtract(msg.PostDate).Days;
+                                                        if (msg.Status == 1)
+                                                        {
+                                                            @:<tr class="selected">
+                                                        }
+                                                        else
+                                                        {
+                                                            @:<tr class="active">
+                                                        }
+                                                        <td>
+                                                            @Html.EditorFor(model => msg.Title)
+                                                            <p class="text-muted">Msg Id: @msg.Id</p>
+                                                        </td>
+
+                                                        <td class="main-td">
+                                                            @if (days == 0)
+                                                            {
+                                                                <p>Today</p>
+                                                            }
+                                                            else if (days == 1)
+                                                            {
+                                                                <p class="text-muted">@days Day old</p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <p class="text-muted">@days Days old</p>
+                                                            }
+
+                                                        </td>
+
+                                                        <td>
+                                                            @if (msg.Status == 0)
+                                                            {
+                                                                <p>Open</p>
+                                                            }
+                                                            @if (msg.Status == 1)
+                                                            {
+                                                                <p>Closed</p>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            <button type="button"
+                                                                    data-toggle="modal"
+                                                                    data-target="#myModal"
+                                                                    data-msg-id="@msg.Id"
+                                                                    data-msg-title="@msg.Title"
+                                                                    data-msg-desc="@msg.Description"
+                                                                    data-msg-rus="@msg.ReturnTo"
+                                                                    data-msg-stat="@msg.Status"
+                                                                    data-msg-cre="@msg.PostDate.ToLongDateString() @msg.PostDate.ToLongTimeString()"
+                                                                    class=" btn btn-danger btn-sm" style="margin-top:5px;margin-bottom:5px;">
+                                                                Message Details
+                                                            </button>
+                                                            @if(msg.Status == 1){
+                                                                @:|
+                                                                @Html.ActionLink("Delete", "AdminMessageDelete", "Admin", new { Area = "Admin", msgId = msg.Id }, htmlAttributes: new { @class = "btn btn-warning btn-sm" })
+                                                            }
+                                                        </td>
+                                                    }
+                                                }
+                                            }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+</div>
+<!--Modals-->
+@using (Ajax.BeginForm("AdminMessageClose", new AjaxOptions { UpdateTargetId = "myModal" }))
+{
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:scroll !important;">
+        <div class="modal-dialog" style="min-width: 310px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Report details</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="msgId" name="msgId" value="" />
+                    <br />
+                    <table class="table-condensed table-striped">
+                        <tr>
+                            <th>Message Title</th>
+                            <td id="msgtitle"></td>
+                        </tr>
+                        <tr>
+                            <th>Message Post Date</th>
+                            <td id="msgcre"></td>
+                        </tr>
+                        <tr>
+                            <th>Reported By</th>
+                            <td><a id="msgrus" href=""></a></td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td id="msgdesc"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeId" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <input type="submit" value="Close Report" id="myModalSubmit" class="btn btn-primary pull-right" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section scripts{
+    <script>
+        //triggered when modal is about to be shown
+        $('#myModal').on('show.bs.modal', function (e) {
+            //get data-id attribute of the clicked element
+            var msgId = $(e.relatedTarget).data('msg-id');
+            var msgTitle = $(e.relatedTarget).data('msg-title');
+            var msgDesc = $(e.relatedTarget).data('msg-desc');
+            var msgRus = $(e.relatedTarget).data('msg-rus');
+            var msgCre = $(e.relatedTarget).data('msg-cre');
+            var msgSta = $(e.relatedTarget).data('msg-stat');
+            //populate the textbox
+            $(e.currentTarget).find('#msgtitle').text(msgTitle);
+            $(e.currentTarget).find('#msgdesc').text(msgDesc);
+            $(e.currentTarget).find('#msgrus').text(msgRus).attr('href','mailto:'+msgRus);
+            $(e.currentTarget).find('#msgcre').text(msgCre);
+            $(e.currentTarget).find('#msgId').val(msgId);
+            if (msgSta == 1) {
+                $(e.currentTarget).find('#myModalSubmit').attr("disabled", true);                
+            }
+
+        });
+
+        $('#myModal').on('click', '#okIdButtonSucceed', function () {
+            location.reload();
+        });
+    </script>
+    
+}

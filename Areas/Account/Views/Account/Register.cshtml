@@ -1,0 +1,142 @@
+﻿@using Trinbago_MVC5.Areas.Account.Models
+@model Register
+@{
+    ViewBag.Title = "Register";
+}
+
+<!--Google Code for Register Conversion Page-->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 868605937;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "NigZCPXMyWwQ8b-XngM";
+var google_remarketing_only = false;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+    <div style="display:inline;">
+        <img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/868605937/?label=NigZCPXMyWwQ8b-XngM&amp;guid=ON&amp;script=0" />
+    </div>
+</noscript>
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-12 col-md-7 mb-2">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h2 class="formhead">Register With</h2>
+                                    @{Html.RenderPartial("_ExternalLoginsListPartial", new ExternalLoginList { ReturnUrl = ViewBag.ReturnUrl }); }
+                                    @using (Html.BeginForm())
+                                    {
+                                            @Html.AntiForgeryToken()
+
+                                        <fieldset class="t"><h2 class="formhead">Or Create An Account With Us</h2></fieldset>
+                                        <h3><strong>Account Info (Required)</strong></h3>
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.PosterName)
+                                            @Html.TextBoxFor(m => m.PosterName, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.PosterName, null, htmlAttributes: new { @style = "color:red;" })
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Email)
+                                            @Html.TextBoxFor(m => m.Email, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.Email, null, htmlAttributes: new { @style = "color:red;" })
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Password)
+                                            @Html.PasswordFor(m => m.Password, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.Password, null, htmlAttributes: new { @style = "color:red;" })
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ConfirmPassword)
+                                            @Html.PasswordFor(m => m.ConfirmPassword, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.ConfirmPassword, null, htmlAttributes: new { @style = "color:red;" })
+                                        </div>
+                                        <h3><strong>Default Contact Info (Optional)</strong></h3>
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ContactName)
+                                            @Html.TextBoxFor(m => m.ContactName, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.ContactName, null, htmlAttributes: new { @style = "color:red;" })
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ContactNumber)
+                                            @Html.TextBoxFor(m => m.ContactNumber, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.ContactNumber, null, htmlAttributes: new { @style = "color:red;" })
+                                        </div> 
+                                        <div class="form-group text-center">
+                                            <input type="submit" value="Create Account" class="btn btn-primary text-center" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5 col-sm-12 account-sidebar hidden-sm">
+                    <div class="row">
+                        <div class="col-sm-3" style="text-align: center;">
+                            <img src="~/Images/icons/Crest.png" width="50">
+                        </div>
+                        <div class="col-sm-8">
+                            <h3>Why us?</h3>
+                            <p>We offer a free platform for your classified ads and make them accessible to the world</p><p>
+                            </p>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-sm-3" style="text-align: center;">
+                            <img src="~/Images/icons/Magnet.png" width="40">
+                        </div>
+                        <div class="col-sm-8">
+                            <h3>Magnet for buyers</h3>
+                            <p>We make sure your listings receive maximum exposure and is presented in an engaging way</p>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-sm-3" style="text-align: center;">
+                            <img src="~/Images/icons/Search.png" width="40">
+                        </div>
+                        <div class="col-sm-8">
+                            <h3>Focused searches</h3>
+                            <p>Our technology and algorithms match potential buyers directly to your listings</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-3" style="text-align: center;">
+                            <img src="~/Images/icons/smartphone.png" width="50">
+                        </div>
+                        <div class="col-sm-8">
+                            <h3>Mobile web</h3>
+                            <p>Your listings will always be accessible to everyone, even when they are on the move, via our responsive mobile website</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    
+}

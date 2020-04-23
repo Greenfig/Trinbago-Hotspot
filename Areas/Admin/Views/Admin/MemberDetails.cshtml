@@ -1,0 +1,137 @@
+﻿@model Trinbago_MVC5.Areas.Admin.Models.AdminMemberDetails
+@{
+    ViewBag.Title = "Memeber Details";
+}
+
+<hr class="topbar">
+<div class="container">
+    <div class="row">
+        @{Html.RenderPartial("~/Views/Shared/_MyAccountMenuPartial.cshtml");}
+        <!--Member-->
+        <div class="col-sm-9">
+            <div class="card" style="min-width: 600px;">
+                <div class="card-header">Member details</div>
+                <div class="card-body">
+                    <form class="form-vertical">
+                        <fieldset>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h2>User Info @if(User.IsInRole("Admin") &&  Model.IsUser){@Html.ActionLink("Delete Ads", "AdminRemoveUserAds", "AdminManage", new { @userStringId = @Model.StringId, @userid = @Model.UserId }, new { @class = "btn btn-warning btn-sm" }) @Html.ActionLink("Delete User", "AdminRemoveUser", "AdminManage", new { @userStringId = @Model.StringId, @userid = @Model.UserId }, new { @class = "btn btn-danger btn-sm pull-right" }) }</h2>
+                                    <table class="table table-responsive">
+                                        <tbody>
+                                            <tr>
+                                                <th>
+                                                    @Html.Label("User id")
+                                                </th>
+                                                <th>
+                                                    @Html.Label("Poster name")
+                                                </th>
+                                                <th>
+                                                    @Html.Label("Contact name")
+                                                </th>
+                                                <th>
+                                                    @Html.Label("Contact number")
+                                                </th>
+                                                <th>
+                                                    @Html.Label("Email")
+                                                </th>
+                                                <th>
+                                                    @Html.Label("Ad count")
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    @Model.UserId
+                                                </td>
+                                                <td>
+                                                    @Model.PosterName
+                                                </td>
+                                                <td>
+                                                    @Model.ContactName
+                                                </td>
+                                                <td>
+                                                    @Model.ContactNumber
+                                                </td>
+                                                <td>
+                                                    @Model.Email
+                                                </td>
+                                                <td>
+                                                    @Model.ClassifiedAds.Count()                                                    
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    
+                                    <h2>Related Ads</h2>
+
+                                    <table class="table table-responsive col-md-12">
+                                        <tr>
+                                            <th>
+                                                @Html.Label("Ad StringId")
+                                            </th>
+                                            <th>
+                                                @Html.Label("Ad Title")
+                                            </th>
+                                            <th>
+                                                @Html.Label("Ad Edit count")
+                                            </th>
+                                            <th>
+                                                @Html.Label("Ad Created")
+                                            </th>
+                                            <th>
+                                                @Html.Label("Ad Edited")
+                                            </th>
+                                            <th>
+                                                @Html.Label("Status")
+                                            </th>
+                                            <th>
+                                                @Html.Label("Reports")
+                                            </th>
+                                        </tr>
+
+                                        @foreach (var item in Model.ClassifiedAds)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.StringId)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Title)
+                                                </td>
+                                                <td>
+                                                    @item.EditCount                                                   
+                                                </td>
+                                                <td>
+                                                    @item.TimeStamp.ToShortDateString()
+                                                </td>
+                                                <td>
+                                                    @item.EditTimeStamp.ToShortDateString()
+                                                </td>
+                                                <td>
+                                                    @if (item.Status == 0)
+                                                    {
+                                                        @:Open
+                                                    }
+                                                    @if (item.Status == 1)
+                                                    {
+                                                        @:Closed
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.ReportsCount)
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/Ad List-->
+    </div>
+    <br>
+</div>

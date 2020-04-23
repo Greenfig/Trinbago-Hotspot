@@ -1,0 +1,193 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdMyList>
+<table class="table edit-listings table-striped">
+    <thead>
+        <tr>
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @if (Model.PageCount > 1)
+            {
+                @Html.PagedListPager(Model, pageNumber => Url.Action("MyAdListPagination", "ClassifiedAdManage",
+            new
+            {
+                Area = "ClassifiedAd",
+                pageNumber,
+                searchType = ViewBag.sTyp
+            }),
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions()
+                {
+                    LinkToFirstPageFormat = string.Format("First"),
+                    LinkToPreviousPageFormat = string.Format("<"),
+                    LinkToNextPageFormat = string.Format(">"),
+                    LinkToLastPageFormat = string.Format("Last"),
+                    MaximumPageNumbersToDisplay = 3
+                },
+                    new AjaxOptions()
+                    {
+                        HttpMethod = "GET",
+                        UpdateTargetId = "ajaxAdList"
+                    }
+                ))
+            }
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var ad in Model)
+        {
+
+            var days = DateTime.Now.Date.Subtract(ad.TimeStamp.Date).Days;
+            var daysleft = ad.ExpiryTimeStamp.Subtract(DateTime.Now).Days;
+            <tr>
+                <td>
+                    <div class="row">
+                        <a id="viewalllink" class="row hover col-sm-12 col-md-6 col-lg-8" href="@(ad.NeedApproval ? (ad.Status == 3 ? "#" : (ad.Status == -1 || ad.Status == -2 ? Url.Action("MyAdPreview", "ClassifiedAdManage", new { Area = "ClassifiedAd", adId = @ad.Id }) : Url.Action("ShortAdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", adId = @ad.Id }))) : Url.Action("ShortAdDetails", "ClassifiedAd", new { Area = "ClassifiedAd", adId = @ad.Id }))">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-4" style="margin-bottom:5px;">
+                                @if (!string.IsNullOrEmpty(ad.AdPhoto))
+                                {
+                                    <div class="thumbnail mylist"><img alt="Featured Ad Image" src="~/Images/@ad.StringId.Substring(2, 4)/@ad.StringId.Substring(0, 4)/@ad.AdPhoto" /></div>
+                                }
+                                else
+                                {
+                                    <div class="thumbnail mylist"><img alt="My Ad Image" src="/images/TH/noimage.png"></div>
+                                }
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-8" style="text-align:center;">
+                                <span>@ad.Title.ToUpper()</span><br /><br />
+
+                                @if (ad.Status == 0)
+                                {
+                                    <span>
+                                        <b>Status : </b>Open
+                                        @if (@ad.AdViewsCount == 1)
+                                        {
+                                            <span class="no-views">(@ad.AdViewsCount view)</span><br/>
+                                        }
+                                        else
+                                        {
+                                            <span class="no-views">(@ad.AdViewsCount views)</span><br/>
+                                        }
+                                    </span> 
+                                } 
+                                else if (ad.Status == 1)
+                                {
+                                    <span>
+                                        <b>Status : </b>Sold
+                                        @if (@ad.AdViewsCount == 1)
+                                        {
+                                            <span class="no-views">(@ad.AdViewsCount view)</span><br/>
+                                        }
+                                        else
+                                        {
+                                            <span class="no-views">(@ad.AdViewsCount views)</span><br/>
+                                        }
+                                    </span>
+                                }
+                                else if (ad.Status == 2)
+                                {
+                                    <span>
+                                        <b>Status : </b>Rented
+                                        @if (@ad.AdViewsCount == 1)
+                                        {
+                                            <span class="no-views">(@ad.AdViewsCount view)</span><br>
+                                        }
+                                        else
+                                        {
+                                            <span class="no-views">(@ad.AdViewsCount views)</span><br>
+                                        }
+                                    </span>
+                                }
+                                else if (ad.Status == 3)
+                                {
+                                    <span><b>Status : </b>Pending Deletion</span><br />
+                                }
+                                else if (ad.Status == -2)
+                                {
+                                    <span><b>Status : </b>Pending Approval</span><br />
+                                }
+                                else if (ad.Status == -1)
+                                {
+                                    <abbr title="Your ad has been suspended by the administrator. Please check your email for more details on the reason and how to fix it."> Suspended </abbr>
+                                }
+
+                                @if (days == 0)
+                                {
+                                    <span>Today</span><br />
+                                }
+                                else if (days == 1)
+                                {
+                                    <span class="text-muted">@days Day old</span><br />
+                                }
+                                else
+                                {
+                                    <span class="text-muted">@days Days old</span><br />
+                                }
+                                    <span class="text-muted">Expires in @daysleft days</span><br />
+                                @if (ad.EditTimeStamp != null && !ad.EditTimeStamp.Date.Equals(ad.TimeStamp.Date))
+                                {
+                                    <span class="extend-ad">edited(@ad.EditTimeStamp.ToString("dd/MMMM/yyyy"))</span>
+                                }
+                            </div>
+                        </a>
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-4" style="text-align:center;">
+                            <div class="row">
+                            @if (ad.Status == 0 || ad.Status == -1)
+                            {
+                                @Html.ActionLink("Edit", "MyAdEdit", "ClassifiedAdManage", new { Area = "ClassifiedAd", adId = ad.Id }, htmlAttributes: new { @class = "btn btn-info btn-sm col-12 col-sm-12 col-md-4 col-lg-4 mx-auto mt-2", @style = "width:75px;max-width:75px;" })
+                                //@Html.ActionLink("Promote", "CurrentPromotions", "Promotion", null, new { @class = "btn btn-primary btn-sm", @style = "margin-top:5px;margin-bottom:5px;height:40px;width:75px;line-height:35px;" })
+                                if (daysleft <= 14) {
+                                    using (Html.BeginForm("FinalizeMyAdRenew", "ClassifiedAdManage", new { Area = "ClassifiedAd", adId = ad.Id }, FormMethod.Post, null))
+                                    {
+                                        <button type="submit" class="btn btn-primary btn-sm col-12 col-sm-12 col-md-4 col-lg-4 mx-auto mt-2" style="width:75px;max-width:75px;">Renew!</button>
+                                    }
+                                }
+                                if (ad.Status == -1)
+                                {
+                                    <button type="button" data-toggle="modal" data-target="#myModalOpenRequest" data-ad-id="@ad.Id" data-ad-title="@ad.Title" class="btn btn-warning btn-sm col-12 col-sm-12 col-md-4 col-lg-4 mx-auto mt-2" style="width:75px;max-width:75px;">Open Ad</button>
+                                }
+                                else
+                                {
+                                    <button type="button" data-toggle="modal" data-target="#myModalClose" data-ad-id="@ad.Id" data-ad-title="@ad.Title" class="btn btn-danger btn-sm col-12 col-sm-12 col-md-4 col-lg-4 mx-auto mt-2" style="width:75px;max-width:75px;">Close Ad</button>
+                                }
+                            }
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<tfoot>
+    <tr>
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        @if (Model.PageCount > 1)
+        {
+            @Html.PagedListPager(Model, pageNumber => Url.Action("MyAdListPagination", "ClassifiedAdManage",
+            new
+            {
+                Area = "ClassifiedAd",
+                pageNumber,
+                searchCategory = ViewBag.sCat,
+                searchType = ViewBag.sTyp,
+                searchString = ViewBag.sStr
+            }),
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions()
+                {
+                    LinkToFirstPageFormat = string.Format("First"),
+                    LinkToPreviousPageFormat = string.Format("<"),
+                    LinkToNextPageFormat = string.Format(">"),
+                    LinkToLastPageFormat = string.Format("Last"),
+                    MaximumPageNumbersToDisplay = 3
+                },
+                    new AjaxOptions()
+                    {
+                        HttpMethod = "GET",
+                        UpdateTargetId = "ajaxAdList"
+                    }
+                ))
+        }
+    </tr>
+</tfoot>

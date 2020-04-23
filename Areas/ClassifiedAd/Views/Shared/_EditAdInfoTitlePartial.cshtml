@@ -1,0 +1,141 @@
+﻿@model Trinbago_MVC5.Areas.ClassifiedAd.Models.ClassifiedAdEditForm
+
+@if (Model.SubCategoryName.Equals("Cars/Trucks") || Model.SubCategoryName.Equals("Motorcycles/ATVs"))
+{
+    <div class="mb-3">
+        <div class="row">
+            @{
+                var make = Model.AdInfo.SingleOrDefault(x => x.Name == "Make");
+                var mod = Model.AdInfo.SingleOrDefault(x => x.Name == "Model");
+                var mbt = Model.AdInfo.SingleOrDefault(x => x.Name == "Body Type");
+            }
+            @Html.Hidden("AdInfo[" + 0 + "].Name", make.Name)
+            <div class="form-group col-12 col-sm-6">
+                <label class="col-form-label">1. @make.Name<span style="color:red;"> *</span></label>
+                <div class="col-12 p-0">
+                    @Html.DropDownList("AdInfo[" + 0 + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name == "MakeList").List, new
+                    {
+                        required = "required",
+                        @class = "selectpicker form-control",
+                        @data_val = "true",
+                        @data_val_required = "Vehicle make is required",
+                        data_live_search = "true",
+                        title = "-Select a Make-"
+                    })
+                    @Html.ValidationMessage("AdInfo[" + 0 + "].Description", new { @class = "text-danger" })
+                </div>
+            </div>
+            @Html.Hidden("AdInfo[" + 1 + "].Name", mod.Name)
+            <div class="form-group col-12 col-sm-6">
+                <label class="col-form-label">2. @mod.Name<span style="color:red;"> *</span></label>
+                <div class="col-12 p-0">
+                    @Html.TextBox("AdInfo[" + 1 + "].Description", mod.Description, new
+                    {
+                        id = mod.Name,
+                        required = "required",
+                        @class = "form-control",
+                        @data_val = "true",
+                        @data_val_required = "Model is required",
+                        @data_val_regex = "Model field exceeds the maximum length of 40!",
+                        @data_val_regex_pattern = @"^[a-zA-Z0-9\-\s]{0,40}$"
+                    })
+                    @Html.ValidationMessage("AdInfo[" + 1 + "].Description", new { @class = "text-danger" })
+                </div>
+            </div>
+            @if (Model.SubCategoryName.Equals("Cars/Trucks")) { 
+            @Html.Hidden("AdInfo[" + 2 + "].Name", mbt.Name)
+            <div class="form-group col-12 col-sm-6">
+                <label class="col-form-label">3. @mbt.Name<span style="color:red;"> *</span></label>
+                <div class="col-12 p-0">
+                    @Html.DropDownList("AdInfo[" + 2 + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name == "BodyTypeList").List, "-Select a Body Type-", new
+                    {
+                        id = mbt.Name,
+                        @class = "custom-select",
+                        required = "required",
+                        @data_val = "true",
+                        @data_val_required = "Body Type is required"
+                    })
+                    @Html.ValidationMessage("AdInfo[" + 2 + "].Description", new { @class = "text-danger" })
+                </div>
+            </div>
+            }
+            <!--Title-->
+            <div class="form-group col-12 col-sm-6">
+                <label class="col-form-label">4. Ad Title<span class="pull-right" style="color:red">*</span></label>
+                @Html.TextBoxFor(model => model.Title, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Title, null, htmlAttributes: new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!--Title-->
+    <div class="form-group mb-4">
+        <label class="col-form-label">Ad Title<span class="pull-right" style="color:red">*</span></label>
+        @Html.TextBoxFor(model => model.Title, htmlAttributes: new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Title, null, htmlAttributes: new { @class = "text-danger" })
+    </div>
+}
+
+@if (Model.SubCategoryName.Equals("Apartments/Condos For Sale") || Model.SubCategoryName.Equals("Apartments/Condos Rental") ||
+    Model.SubCategoryName.Equals("House For Sale") || Model.SubCategoryName.Equals("House Rental"))
+{
+    var bedroom = Model.AdInfo.SingleOrDefault(x => x.Name == "Bedrooms");
+    var bathroom = Model.AdInfo.SingleOrDefault(x => x.Name == "Bathrooms");
+    var rental = Model.AdInfo.SingleOrDefault(x => x.Name == "Rental Type");
+
+    <div class="mb-3">
+        <div class="row">
+            @Html.Hidden("AdInfo[" + 0 + "].Name", bedroom.Name)
+            <div class="form-group col-12 col-sm-6">
+                <label class="col-form-label">@bedroom.Name<span style="color:red;"> *</span></label>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 p-0">
+                    @Html.DropDownList("AdInfo[" + 0 + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name == "BedroomList").List, "-Please Select-", new
+                    {
+                        required = "required",
+                        @class = "custom-select",
+                        @data_val = "true",
+                        @data_val_required = "Bedroom number is required"
+                    })
+                    @Html.ValidationMessage("AdInfo[" + 0 + "].Description", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @Html.Hidden("AdInfo[" + 1 + "].Name", bathroom.Name)
+            <div class="form-group col-12 col-sm-6">
+                <label class="col-form-label">@bathroom.Name<span style="color:red;"> *</span></label>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 p-0">
+                    @Html.DropDownList("AdInfo[" + 1 + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name == "BathroomList").List, "-Please Select-", new
+                    {
+                        required = "required",
+                        @class = "custom-select",
+                        @data_val = "true",
+                        @data_val_required = "Bathroom number is required"
+                    })
+                    @Html.ValidationMessage("AdInfo[" + 1 + "].Description", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @if (rental != null)
+            {
+            @Html.Hidden("AdInfo[" + 2 + "].Name", rental.Name)
+            <div class="form-group col-12 col-sm-6">
+                <label class="col-form-label">@rental.Name<span style="color:red;"> *</span></label>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 p-0">
+                    @Html.DropDownList("AdInfo[" + 2 + "].Description", Model.SelectListForm.SingleOrDefault(x => x.Name == "RentalType").List, new
+                    {
+                        required = "required",
+                        @class = "custom-select",
+                        @data_val = "true",
+                        @data_val_required = "Retal Type is required"
+                    })
+                    @Html.ValidationMessage("AdInfo[" + 2 + "].Description", new { @class = "text-danger" })
+                </div>
+            </div>
+            }
+
+        </div>
+    </div>
+}
+
